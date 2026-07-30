@@ -1,4 +1,4 @@
-package com.bloodyglyph;
+package bettapcq.bloodyglyph;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

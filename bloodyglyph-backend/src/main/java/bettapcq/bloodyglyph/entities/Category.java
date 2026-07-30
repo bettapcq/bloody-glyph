@@ -1,4 +1,4 @@
-package com.bloodyglyph.entities;
+package bettapcq.bloodyglyph.entities;
 import jakarta.persistence.*;
 import lombok.*;
 

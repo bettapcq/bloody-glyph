@@ -1,4 +1,4 @@
-package com.bloodyglyph;
+package bettapcq.bloodyglyph;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

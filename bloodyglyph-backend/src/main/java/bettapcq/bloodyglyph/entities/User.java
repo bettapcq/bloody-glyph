@@ -1,7 +1,11 @@
-package com.bloodyglyph.entities;
+package bettapcq.bloodyglyph.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.Collection;
 
 @Entity
 @Getter
@@ -28,6 +32,5 @@ public class User {
     @JsonIgnore
     @Column(nullable = false)
     private String password;
-
 
 }
