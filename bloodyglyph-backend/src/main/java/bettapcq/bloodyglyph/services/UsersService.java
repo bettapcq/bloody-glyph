@@ -5,13 +5,21 @@ import bettapcq.bloodyglyph.payloads.requests.RegisterDTO;
 import bettapcq.bloodyglyph.payloads.responses.UserResponseDTO;
 import bettapcq.bloodyglyph.repositories.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 @Service
 @Slf4j
-public class UsersService {
+
+//implemento UserDetailsService in questa classe, lasciando così a Spring Security il compito di gestire il processo di autenticazione (vedi differenza approccio manuale su progetto PopcornPal)
+public class UsersService implements UserDetailsService {
 
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
@@ -51,7 +59,7 @@ public class UsersService {
         //salva in db
         User savedUser = usersRepository.save(newUser);
 
-        //restituisti il dto
+        //restituisci il dto
         return new UserResponseDTO(
                 savedUser.getUserId(),
                 savedUser.getUsername(),
@@ -59,4 +67,20 @@ public class UsersService {
         );
     }
 
+    //override di UserDetailsService dove inserisco le istruzioni su come effettuare l'autenticazione (tramite mail e pwd in questo caso)
+    @Override
+    public UserDetails loadUserByUsername(String email)
+            throws UsernameNotFoundException {
+
+        User found = usersRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found")
+                );
+
+        return org.springframework.security.core.userdetails.User
+                .withUsername(found.getEmail())
+                .password(found.getPassword())
+                .authorities(Collections.emptyList()) //al momento il progetto non prevede ruoli, quindi uso emptyList
+                .build();
+    }
 }

@@ -5,6 +5,7 @@ import bettapcq.bloodyglyph.payloads.errors.ErrorsDTO;
 import bettapcq.bloodyglyph.payloads.errors.ErrorsListDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -24,6 +25,21 @@ public class ErrorsHandler {
                 ex.getErrors()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    // 401 - Bad Credentials
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorsDTO> handleBadCredentials(
+            BadCredentialsException ex
+    ) {
+        ErrorsDTO response = new ErrorsDTO(
+                "Email o password non corretti",
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(response);
     }
 
     // 403 - Authorization Denied Exception
@@ -55,7 +71,7 @@ public class ErrorsHandler {
         ex.printStackTrace();
 
         ErrorsDTO response = new ErrorsDTO(
-                "Internal error, please try later",
+                "Errore interno, per favore riprova più tardi",
                 LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);

@@ -1,8 +1,11 @@
 package bettapcq.bloodyglyph.controllers;
 
 import bettapcq.bloodyglyph.exceptions.ValidationException;
+import bettapcq.bloodyglyph.payloads.requests.LoginDTO;
 import bettapcq.bloodyglyph.payloads.requests.RegisterDTO;
+import bettapcq.bloodyglyph.payloads.responses.LoginResponseDTO;
 import bettapcq.bloodyglyph.payloads.responses.UserResponseDTO;
+import bettapcq.bloodyglyph.services.AuthService;
 import bettapcq.bloodyglyph.services.UsersService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,9 +23,11 @@ import java.util.List;
 public class AuthController {
 
     private final UsersService usersService;
+    private final AuthService authService;
 
-    public AuthController(UsersService usersService) {
+    public AuthController(UsersService usersService, AuthService authService) {
         this.usersService = usersService;
+        this.authService = authService;
     }
 
 
@@ -42,6 +47,24 @@ public class AuthController {
         }
 
         return usersService.register(payload);
+    }
+
+    @PostMapping("/login")
+    @Operation(
+            summary = "Login utente",
+            description = "Autentica un utente tramite email e password e restituisce un token JWT valido insieme ai dati dell'utente."
+    )
+    public LoginResponseDTO login(
+            @RequestBody @Valid LoginDTO payload,
+            BindingResult valRes
+    ) {
+        if (valRes.hasErrors()) {
+            List<String> errList = valRes.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+
+            throw new ValidationException(errList);
+        }
+
+        return authService.login(payload);
     }
 
 
