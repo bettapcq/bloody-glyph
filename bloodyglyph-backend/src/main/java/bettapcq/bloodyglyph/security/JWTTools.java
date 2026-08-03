@@ -41,16 +41,7 @@ public class JWTTools {
                 .compact(); //unisce tutti i dati
     }
 
-    //metodo per verificare che il token sia valido
-    public void verifyToken(String token) {
-
-        Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token);
-    }
-
-    //metodo per estrarre l'id dell'utente dal token
+    //metodo per verificare che il token sia valido ed estrarre l'id dell'utente dal token
     public String extractSubject(String token) {
 
         return Jwts.parser()
