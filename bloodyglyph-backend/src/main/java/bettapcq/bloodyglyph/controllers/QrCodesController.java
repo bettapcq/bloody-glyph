@@ -38,4 +38,9 @@ public class QrCodesController {
         return qrCodesService.getMyQrCodes();
     }
 
+    @Operation(summary = "Recupera il QR Code dell'utente autenticato tramite l'ID")
+    @GetMapping("/{qrId}")
+    public QrCodeResponseDTO getMyQrCode(@PathVariable Long qrId) {
+        return qrCodesService.getMyQrCodeById(qrId);
+    }
 }

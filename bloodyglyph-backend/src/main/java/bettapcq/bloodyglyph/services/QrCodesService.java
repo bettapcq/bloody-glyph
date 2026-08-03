@@ -3,6 +3,7 @@ package bettapcq.bloodyglyph.services;
 
 import bettapcq.bloodyglyph.entities.QrCode;
 import bettapcq.bloodyglyph.entities.User;
+import bettapcq.bloodyglyph.exceptions.NotFoundException;
 import bettapcq.bloodyglyph.payloads.requests.NewQrCodeDTO;
 import bettapcq.bloodyglyph.payloads.responses.QrCodeResponseDTO;
 import bettapcq.bloodyglyph.repositories.QrCodesRepository;
@@ -61,6 +62,26 @@ public class QrCodesService {
                                 : qrCode.getCategory().getCategoryId()
                 ))
                 .toList();
+    }
+
+    public QrCodeResponseDTO getMyQrCodeById(Long qrId) {
+        User currentUser = usersService.getCurrentUserEntity();
+
+        QrCode found = qrCodesRepository.findByQrIdAndUser(qrId, currentUser).orElseThrow(() ->
+                new NotFoundException("QR Code non trovato")
+        );
+
+        return new QrCodeResponseDTO(
+                found.getQrId(),
+                found.getTitle(),
+                found.getContent(),
+                found.getCreatedAt(),
+                found.getUser().getUserId(),
+                found.getCategory() == null
+                        ? null
+                        : found.getCategory().getCategoryId()
+        );
+
     }
 
 }
