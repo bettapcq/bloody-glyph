@@ -10,8 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -64,17 +62,5 @@ public class QrCodesController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMyQrCode(@PathVariable Long qrId) {
         qrCodesService.deleteMyQrCode(qrId);
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<byte[]> testQr() {
-
-        byte[] image = qrImagesService.generateQrImage(
-                "https://elisabettapiacquadiodev.it"
-        );
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_PNG)
-                .body(image);
     }
 }

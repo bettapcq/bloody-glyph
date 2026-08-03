@@ -6,6 +6,7 @@ public record QrCodeResponseDTO(
         Long qrId,
         String title,
         String content,
+        String qrImageUrl,
         LocalDateTime createdAt,
         Long userId,
         Long categoryId

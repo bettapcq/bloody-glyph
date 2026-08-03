@@ -7,6 +7,7 @@ import bettapcq.bloodyglyph.exceptions.BadRequestException;
 import bettapcq.bloodyglyph.exceptions.NotFoundException;
 import bettapcq.bloodyglyph.payloads.requests.NewQrCodeDTO;
 import bettapcq.bloodyglyph.payloads.requests.UpdateQrCodeDTO;
+import bettapcq.bloodyglyph.payloads.responses.CloudinaryUploadResponseDTO;
 import bettapcq.bloodyglyph.payloads.responses.QrCodeResponseDTO;
 import bettapcq.bloodyglyph.repositories.QrCodesRepository;
 import org.springframework.stereotype.Service;
@@ -16,12 +17,18 @@ import java.util.List;
 @Service
 public class QrCodesService {
 
-    private QrCodesRepository qrCodesRepository;
+    private final QrCodesRepository qrCodesRepository;
     private final UsersService usersService;
+    private final QrImagesService qrImagesService;
+    private final CloudinaryService cloudinaryService;
 
-    public QrCodesService(QrCodesRepository qrCodesRepository, UsersService usersService) {
+
+    public QrCodesService(QrCodesRepository qrCodesRepository, UsersService usersService, QrImagesService qrImagesService, CloudinaryService cloudinaryService) {
         this.qrCodesRepository = qrCodesRepository;
         this.usersService = usersService;
+        this.qrImagesService = new QrImagesService();
+        this.cloudinaryService = cloudinaryService;
+
     }
 
     private static final int FREE_QR_CODE_LIMIT = 3;
@@ -33,6 +40,7 @@ public class QrCodesService {
                 qrCode.getQrId(),
                 qrCode.getTitle(),
                 qrCode.getContent(),
+                qrCode.getQrImageUrl(),
                 qrCode.getCreatedAt(),
                 qrCode.getUser().getUserId(),
                 qrCode.getCategory() == null
@@ -54,9 +62,21 @@ public class QrCodesService {
             );
         }
 
+        //Genero l'immagine del QR personalizzato
+        byte[] qrImage = qrImagesService.generateQrImage(
+                payload.content()
+        );
+
+        //Carico l'immagine su Cloudinary
+        CloudinaryUploadResponseDTO upload =
+                cloudinaryService.uploadQrImage(qrImage);
+
+        //Creo l'entity
         QrCode qrCode = QrCode.builder()
                 .title(payload.title())
                 .content(payload.content())
+                .qrImageUrl(upload.secureUrl())
+                .qrImagePublicId(upload.publicId())
                 .user(currentUser)
                 .build();
 
