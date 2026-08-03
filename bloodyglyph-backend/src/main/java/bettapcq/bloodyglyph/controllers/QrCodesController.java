@@ -2,6 +2,7 @@ package bettapcq.bloodyglyph.controllers;
 
 
 import bettapcq.bloodyglyph.payloads.requests.NewQrCodeDTO;
+import bettapcq.bloodyglyph.payloads.requests.UpdateQrCodeDTO;
 import bettapcq.bloodyglyph.payloads.responses.QrCodeResponseDTO;
 import bettapcq.bloodyglyph.services.QrCodesService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,5 +43,14 @@ public class QrCodesController {
     @GetMapping("/{qrId}")
     public QrCodeResponseDTO getMyQrCode(@PathVariable Long qrId) {
         return qrCodesService.getMyQrCodeById(qrId);
+    }
+
+    @Operation(summary = "Modifica un QR Code dell'utente autenticato")
+    @PatchMapping("/{qrId}")
+    public QrCodeResponseDTO updateMyQrCode(
+            @PathVariable Long qrId,
+            @RequestBody @Valid UpdateQrCodeDTO payload
+    ) {
+        return qrCodesService.updateMyQrCode(qrId, payload);
     }
 }

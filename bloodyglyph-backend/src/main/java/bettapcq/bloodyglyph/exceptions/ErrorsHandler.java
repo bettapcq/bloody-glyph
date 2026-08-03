@@ -63,7 +63,6 @@ public class ErrorsHandler {
 
 
     // 500 - Generic Exception
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorsDTO> handleGenericException(Exception ex) {
         ex.printStackTrace();

@@ -5,6 +5,7 @@ import bettapcq.bloodyglyph.entities.QrCode;
 import bettapcq.bloodyglyph.entities.User;
 import bettapcq.bloodyglyph.exceptions.NotFoundException;
 import bettapcq.bloodyglyph.payloads.requests.NewQrCodeDTO;
+import bettapcq.bloodyglyph.payloads.requests.UpdateQrCodeDTO;
 import bettapcq.bloodyglyph.payloads.responses.QrCodeResponseDTO;
 import bettapcq.bloodyglyph.repositories.QrCodesRepository;
 import org.springframework.stereotype.Service;
@@ -83,5 +84,36 @@ public class QrCodesService {
         );
 
     }
+
+    public QrCodeResponseDTO updateMyQrCode(Long qrId, UpdateQrCodeDTO payload) {
+
+        User currentUser = usersService.getCurrentUserEntity();
+
+        QrCode found = qrCodesRepository
+                .findByQrIdAndUser(qrId, currentUser)
+                .orElseThrow(() ->
+                        new NotFoundException("QR Code non trovato.")
+                );
+
+        if (payload.title() != null) {
+            found.setTitle(payload.title());
+        }
+        if (payload.content() != null) {
+            found.setContent(payload.content());
+        }
+        QrCode qrCodeUpdated = qrCodesRepository.save(found);
+
+        return new QrCodeResponseDTO(
+                found.getQrId(),
+                found.getTitle(),
+                found.getContent(),
+                found.getCreatedAt(),
+                found.getUser().getUserId(),
+                found.getCategory() == null
+                        ? null
+                        : found.getCategory().getCategoryId()
+        );
+    }
+
 
 }
