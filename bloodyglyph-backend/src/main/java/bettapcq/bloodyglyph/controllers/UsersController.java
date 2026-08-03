@@ -25,6 +25,6 @@ public class UsersController {
             description = "Recupera l'utente loggato e restituisce le sue info"
     )
     public UserResponseDTO getCurrentUser() {
-        return usersService.getUserLogged();
+        return usersService.getCurrentUser();
     }
 }

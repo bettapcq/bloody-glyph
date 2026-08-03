@@ -36,7 +36,7 @@ public class UsersService implements UserDetailsService {
     }
 
     public User findByEmail(String email) {
-        return this.usersRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Email non trovataPublic"));
+        return this.usersRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Email non trovata"));
     }
 
     public UserResponseDTO register(RegisterDTO payload) {
@@ -69,23 +69,27 @@ public class UsersService implements UserDetailsService {
         );
     }
 
-    //Metodo che mi serve per estrarre lo user attualmente loggato (salvato come principal nel security context) e restituire il suo DTO
-    public UserResponseDTO getUserLogged() {
-
+    //Metodo che mi serve restiture l'entity dell'utente autenticato, recuperandola dal SecurityContext.
+    public User getCurrentUserEntity() {
         Authentication authentication =
                 SecurityContextHolder
                         .getContext()
                         .getAuthentication();
+        return (User) authentication.getPrincipal();
+    }
 
-        User currentUser = (User) authentication.getPrincipal();
+    //Metodo per restituire il dto dell'utente autenticato
+    public UserResponseDTO getCurrentUser() {
 
+        User userLogged = getCurrentUserEntity();
 
         return new UserResponseDTO(
-                currentUser.getUserId(),
-                currentUser.getUsername(),
-                currentUser.getEmail()
+                userLogged.getUserId(),
+                userLogged.getUsername(),
+                userLogged.getEmail()
         );
     }
+
 
     //override di UserDetailsService dove inserisco le istruzioni su come effettuare l'autenticazione (tramite mail e pwd in questo caso)
     @Override
