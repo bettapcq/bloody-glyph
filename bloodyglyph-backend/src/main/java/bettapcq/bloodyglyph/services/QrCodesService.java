@@ -116,4 +116,12 @@ public class QrCodesService {
     }
 
 
+    public void deleteMyQrCode(Long qrId) {
+        User currentUser = usersService.getCurrentUserEntity();
+
+        QrCode found = qrCodesRepository.findByQrIdAndUser(qrId, currentUser).orElseThrow(() ->
+                new NotFoundException("QR Code non trovato."));
+
+        qrCodesRepository.delete(found);
+    }
 }

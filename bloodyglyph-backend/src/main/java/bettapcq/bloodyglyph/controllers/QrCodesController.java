@@ -53,4 +53,11 @@ public class QrCodesController {
     ) {
         return qrCodesService.updateMyQrCode(qrId, payload);
     }
+
+    @Operation(summary = "Elimina un QR Code dell'utente autenticato")
+    @DeleteMapping("/{qrId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMyQrCode(@PathVariable Long qrId) {
+        qrCodesService.deleteMyQrCode(qrId);
+    }
 }
