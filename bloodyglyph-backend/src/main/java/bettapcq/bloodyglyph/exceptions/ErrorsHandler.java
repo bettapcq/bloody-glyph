@@ -2,7 +2,6 @@ package bettapcq.bloodyglyph.exceptions;
 
 
 import bettapcq.bloodyglyph.payloads.errors.ErrorsDTO;
-import bettapcq.bloodyglyph.payloads.errors.ErrorsListDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,13 +15,12 @@ import java.time.LocalDateTime;
 public class ErrorsHandler {
 
 
-    // 400 - Validation Exception (errors list)
-    @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<ErrorsListDTO> handleValidationException(ValidationException ex) {
-        ErrorsListDTO response = new ErrorsListDTO(
+    // 400 - Bad Request Exception
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorsDTO> handleBadRequest(BadRequestException ex) {
+        ErrorsDTO response = new ErrorsDTO(
                 ex.getMessage(),
-                LocalDateTime.now(),
-                ex.getErrors()
+                LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }

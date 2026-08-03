@@ -1,6 +1,7 @@
 package bettapcq.bloodyglyph.services;
 
 import bettapcq.bloodyglyph.entities.User;
+import bettapcq.bloodyglyph.exceptions.BadRequestException;
 import bettapcq.bloodyglyph.exceptions.NotFoundException;
 import bettapcq.bloodyglyph.payloads.requests.RegisterDTO;
 import bettapcq.bloodyglyph.payloads.responses.UserResponseDTO;
@@ -43,12 +44,12 @@ public class UsersService implements UserDetailsService {
 
         // check username già esistente
         if (usersRepository.existsByUsername(payload.username())) {
-            throw new RuntimeException("Username già utilizzato");
+            throw new BadRequestException("Username già utilizzato");
         }
 
         //check email già esistente
         if (usersRepository.existsByEmail(payload.email())) {
-            throw new RuntimeException("Email già utilizzata");
+            throw new BadRequestException("Email già utilizzata");
         }
 
         //crea nuovo user

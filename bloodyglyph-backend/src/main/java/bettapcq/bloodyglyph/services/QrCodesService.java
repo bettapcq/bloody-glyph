@@ -8,6 +8,8 @@ import bettapcq.bloodyglyph.payloads.responses.QrCodeResponseDTO;
 import bettapcq.bloodyglyph.repositories.QrCodesRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class QrCodesService {
 
@@ -39,4 +41,26 @@ public class QrCodesService {
                 null
         );
     }
+
+
+    public List<QrCodeResponseDTO> getMyQrCodes() {
+
+        User currentUser = usersService.getCurrentUserEntity();
+
+        List<QrCode> qrCodes = qrCodesRepository.findByUser(currentUser);
+
+        return qrCodes.stream()
+                .map(qrCode -> new QrCodeResponseDTO(
+                        qrCode.getQrId(),
+                        qrCode.getTitle(),
+                        qrCode.getContent(),
+                        qrCode.getCreatedAt(),
+                        qrCode.getUser().getUserId(),
+                        qrCode.getCategory() == null
+                                ? null
+                                : qrCode.getCategory().getCategoryId()
+                ))
+                .toList();
+    }
+
 }

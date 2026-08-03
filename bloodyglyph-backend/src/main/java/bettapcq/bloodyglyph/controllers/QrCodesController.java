@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/qr")
 @Tag(name = "Qr Codes", description = "Endpoint per la gestione dei QR Code")
@@ -28,6 +30,12 @@ public class QrCodesController {
             @RequestBody @Valid NewQrCodeDTO dto
     ) {
         return qrCodesService.createQrCode(dto);
+    }
+
+    @Operation(summary = "Recupera tutti i QR Code dell'utente autenticato")
+    @GetMapping
+    public List<QrCodeResponseDTO> getMyQrCodes() {
+        return qrCodesService.getMyQrCodes();
     }
 
 }
