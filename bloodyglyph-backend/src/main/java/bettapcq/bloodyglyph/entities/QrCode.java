@@ -26,6 +26,14 @@ public class QrCode {
     @Column(nullable = false)
     private String content;
 
+    //immagine per il frontend
+    @Column(name = "qr_image_url", nullable = false)
+    private String qrImageUrl;
+
+    //id cloudinary dell'immagine per cancellarla o cambiarla
+    @Column(name = "qr_image_public_id", nullable = false)
+    private String qrImagePublicId;
+
     @Column(nullable = false, name = "created_at")
     private LocalDateTime createdAt;
 
