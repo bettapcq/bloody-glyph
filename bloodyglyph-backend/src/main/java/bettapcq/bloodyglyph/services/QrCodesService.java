@@ -3,6 +3,7 @@ package bettapcq.bloodyglyph.services;
 
 import bettapcq.bloodyglyph.entities.QrCode;
 import bettapcq.bloodyglyph.entities.User;
+import bettapcq.bloodyglyph.exceptions.BadRequestException;
 import bettapcq.bloodyglyph.exceptions.NotFoundException;
 import bettapcq.bloodyglyph.payloads.requests.NewQrCodeDTO;
 import bettapcq.bloodyglyph.payloads.requests.UpdateQrCodeDTO;
@@ -23,8 +24,35 @@ public class QrCodesService {
         this.usersService = usersService;
     }
 
+    private static final int FREE_QR_CODE_LIMIT = 3;
+
+
+    private QrCodeResponseDTO toResponseDTO(QrCode qrCode) {
+
+        return new QrCodeResponseDTO(
+                qrCode.getQrId(),
+                qrCode.getTitle(),
+                qrCode.getContent(),
+                qrCode.getCreatedAt(),
+                qrCode.getUser().getUserId(),
+                qrCode.getCategory() == null
+                        ? null
+                        : qrCode.getCategory().getCategoryId()
+        );
+    }
+
     public QrCodeResponseDTO createQrCode(NewQrCodeDTO payload) {
         User currentUser = usersService.getCurrentUserEntity();
+
+        long currentQrCodes = qrCodesRepository.countByUser(currentUser);
+
+        if (currentQrCodes >= FREE_QR_CODE_LIMIT) {
+            throw new BadRequestException(
+                    "Hai raggiunto il limite massimo di "
+                            + FREE_QR_CODE_LIMIT
+                            + " QR Code."
+            );
+        }
 
         QrCode qrCode = QrCode.builder()
                 .title(payload.title())
@@ -34,14 +62,8 @@ public class QrCodesService {
 
         QrCode savedQrCode = qrCodesRepository.save(qrCode);
 
-        return new QrCodeResponseDTO(
-                savedQrCode.getQrId(),
-                savedQrCode.getTitle(),
-                savedQrCode.getContent(),
-                savedQrCode.getCreatedAt(),
-                savedQrCode.getUser().getUserId(),
-                null
-        );
+        return toResponseDTO(savedQrCode);
+
     }
 
 
@@ -52,48 +74,31 @@ public class QrCodesService {
         List<QrCode> qrCodes = qrCodesRepository.findByUser(currentUser);
 
         return qrCodes.stream()
-                .map(qrCode -> new QrCodeResponseDTO(
-                        qrCode.getQrId(),
-                        qrCode.getTitle(),
-                        qrCode.getContent(),
-                        qrCode.getCreatedAt(),
-                        qrCode.getUser().getUserId(),
-                        qrCode.getCategory() == null
-                                ? null
-                                : qrCode.getCategory().getCategoryId()
-                ))
+                .map(this::toResponseDTO)
                 .toList();
     }
 
-    public QrCodeResponseDTO getMyQrCodeById(Long qrId) {
+
+    private QrCode getMyQrEntity(Long qrId) {
+
         User currentUser = usersService.getCurrentUserEntity();
 
-        QrCode found = qrCodesRepository.findByQrIdAndUser(qrId, currentUser).orElseThrow(() ->
-                new NotFoundException("QR Code non trovato")
-        );
+        return qrCodesRepository
+                .findByQrIdAndUser(qrId, currentUser)
+                .orElseThrow(() ->
+                        new NotFoundException("QR Code non trovato.")
+                );
+    }
 
-        return new QrCodeResponseDTO(
-                found.getQrId(),
-                found.getTitle(),
-                found.getContent(),
-                found.getCreatedAt(),
-                found.getUser().getUserId(),
-                found.getCategory() == null
-                        ? null
-                        : found.getCategory().getCategoryId()
-        );
+    public QrCodeResponseDTO getMyQrCodeById(Long qrId) {
+
+        return toResponseDTO(getMyQrEntity(qrId));
 
     }
 
     public QrCodeResponseDTO updateMyQrCode(Long qrId, UpdateQrCodeDTO payload) {
 
-        User currentUser = usersService.getCurrentUserEntity();
-
-        QrCode found = qrCodesRepository
-                .findByQrIdAndUser(qrId, currentUser)
-                .orElseThrow(() ->
-                        new NotFoundException("QR Code non trovato.")
-                );
+        QrCode found = getMyQrEntity(qrId);
 
         if (payload.title() != null) {
             found.setTitle(payload.title());
@@ -103,25 +108,12 @@ public class QrCodesService {
         }
         QrCode qrCodeUpdated = qrCodesRepository.save(found);
 
-        return new QrCodeResponseDTO(
-                found.getQrId(),
-                found.getTitle(),
-                found.getContent(),
-                found.getCreatedAt(),
-                found.getUser().getUserId(),
-                found.getCategory() == null
-                        ? null
-                        : found.getCategory().getCategoryId()
-        );
+        return toResponseDTO(qrCodeUpdated);
     }
 
 
     public void deleteMyQrCode(Long qrId) {
-        User currentUser = usersService.getCurrentUserEntity();
 
-        QrCode found = qrCodesRepository.findByQrIdAndUser(qrId, currentUser).orElseThrow(() ->
-                new NotFoundException("QR Code non trovato."));
-
-        qrCodesRepository.delete(found);
+        qrCodesRepository.delete(getMyQrEntity(qrId));
     }
 }
