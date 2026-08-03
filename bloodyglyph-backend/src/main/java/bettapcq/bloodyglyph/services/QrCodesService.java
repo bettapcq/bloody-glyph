@@ -13,6 +13,7 @@ import bettapcq.bloodyglyph.repositories.QrCodesRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class QrCodesService {
@@ -26,7 +27,7 @@ public class QrCodesService {
     public QrCodesService(QrCodesRepository qrCodesRepository, UsersService usersService, QrImagesService qrImagesService, CloudinaryService cloudinaryService) {
         this.qrCodesRepository = qrCodesRepository;
         this.usersService = usersService;
-        this.qrImagesService = new QrImagesService();
+        this.qrImagesService = qrImagesService;
         this.cloudinaryService = cloudinaryService;
 
     }
@@ -123,17 +124,40 @@ public class QrCodesService {
         if (payload.title() != null) {
             found.setTitle(payload.title());
         }
-        if (payload.content() != null) {
-            found.setContent(payload.content());
-        }
-        QrCode qrCodeUpdated = qrCodesRepository.save(found);
 
+        if (payload.content() != null
+                && !Objects.equals(payload.content(), found.getContent())) {
+
+            // Salvo il publicId della vecchia immagine
+            String oldPublicId = found.getQrImagePublicId();
+
+            // Genero il nuovo QR
+            byte[] qrImage = qrImagesService.generateQrImage(
+                    payload.content()
+            );
+
+            // Carico prima la nuova immagine
+            CloudinaryUploadResponseDTO upload =
+                    cloudinaryService.uploadQrImage(qrImage);
+
+            // Aggiorno tutti i dati nell'entity
+            found.setContent(payload.content());
+            found.setQrImageUrl(upload.secureUrl());
+            found.setQrImagePublicId(upload.publicId());
+
+            // Elimino la vecchia immagine solo dopo il nuovo upload
+            if (oldPublicId != null && !oldPublicId.isBlank()) {
+                cloudinaryService.deleteQrImage(oldPublicId);
+            }
+        }
+
+        QrCode qrCodeUpdated = qrCodesRepository.save(found);
         return toResponseDTO(qrCodeUpdated);
     }
 
-
     public void deleteMyQrCode(Long qrId) {
-
-        qrCodesRepository.delete(getMyQrEntity(qrId));
+        QrCode found = getMyQrEntity(qrId);
+        cloudinaryService.deleteQrImage(found.getQrImagePublicId());
+        qrCodesRepository.delete(found);
     }
 }

@@ -39,4 +39,21 @@ public class CloudinaryService {
             );
         }
     }
+
+
+    public void deleteQrImage(String publicId) {
+        try {
+            cloudinary.uploader().destroy(
+                    publicId,
+                    ObjectUtils.asMap(
+                            "resource_type", "image"
+                    )
+            );
+        } catch (IOException exception) {
+            throw new RuntimeException(
+                    "Errore durante l'eliminazione del QR code da Cloudinary",
+                    exception
+            );
+        }
+    }
 }
