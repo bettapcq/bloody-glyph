@@ -48,10 +48,16 @@ public class CategoriesService {
 
     }
 
-    public CategoryResponseDTO getCategoryById(Long categoryId) {
+    public Category getMyCategoryEntity(Long categoryId) {
         User currentUser = usersService.getCurrentUserEntity();
-        Category category = categoriesRepository.findByCategoryIdAndUser(categoryId, currentUser).orElseThrow(
-                () -> new NotFoundException("Categoria non torvata"));
+        Category found = categoriesRepository.findByCategoryIdAndUser(categoryId, currentUser).orElseThrow(() -> new NotFoundException("categoria non trovata"));
+        return found;
+    }
+
+
+    public CategoryResponseDTO getMyCategoryById(Long categoryId) {
+        User currentUser = usersService.getCurrentUserEntity();
+        Category category = this.getMyCategoryEntity(categoryId);
         return this.toCategoryResponseDTO(category);
     }
 
@@ -66,18 +72,15 @@ public class CategoriesService {
 
     public void deleteCategory(Long categoryId) {
         User currentUser = usersService.getCurrentUserEntity();
-        Category category = categoriesRepository.findByCategoryIdAndUser(categoryId, currentUser).orElseThrow(
-                () -> new NotFoundException("Categoria non torvata")
-        );
+        Category category = this.getMyCategoryEntity(categoryId);
+
         categoriesRepository.delete(category);
     }
 
     public CategoryResponseDTO updateCategory(Long categoryId, NewCategoryDTO payload) {
 
         User currentUser = usersService.getCurrentUserEntity();
-        Category category = categoriesRepository.findByCategoryIdAndUser(categoryId, currentUser).orElseThrow(
-                () -> new NotFoundException("La categoria no esiste")
-        );
+        Category category = this.getMyCategoryEntity(categoryId);
 
         category.setName(payload.name().trim());
         Category categoryUpdated = categoriesRepository.save(category);

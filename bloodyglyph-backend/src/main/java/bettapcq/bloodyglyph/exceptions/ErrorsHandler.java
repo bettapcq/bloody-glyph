@@ -5,6 +5,7 @@ import bettapcq.bloodyglyph.payloads.errors.ErrorsDTO;
 import bettapcq.bloodyglyph.payloads.errors.ErrorsListDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -35,6 +36,20 @@ public class ErrorsHandler {
                 ex.getErrors()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorsDTO> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex
+    ) {
+        ErrorsDTO response = new ErrorsDTO(
+                "Il valore del campo è in un formato non valido",
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(response);
     }
 
 

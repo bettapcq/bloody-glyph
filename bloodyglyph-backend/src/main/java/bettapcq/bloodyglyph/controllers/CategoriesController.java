@@ -49,7 +49,7 @@ public class CategoriesController {
     @Operation(summary = "Recupera la categoria dell'utente autenticato tramite l'ID")
     @GetMapping("/{categoryId}")
     public CategoryResponseDTO getMyCategory(@PathVariable Long categoryId) {
-        return categoriesService.getCategoryById(categoryId);
+        return categoriesService.getMyCategoryById(categoryId);
     }
 
 

@@ -2,6 +2,7 @@ package bettapcq.bloodyglyph.controllers;
 
 
 import bettapcq.bloodyglyph.exceptions.ValidationException;
+import bettapcq.bloodyglyph.payloads.requests.AssignCategoryDTO;
 import bettapcq.bloodyglyph.payloads.requests.NewQrCodeDTO;
 import bettapcq.bloodyglyph.payloads.requests.UpdateQrCodeDTO;
 import bettapcq.bloodyglyph.payloads.responses.QrCodeResponseDTO;
@@ -78,5 +79,16 @@ public class QrCodesController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMyQrCode(@PathVariable Long qrId) {
         qrCodesService.deleteMyQrCode(qrId);
+    }
+
+    @PatchMapping("/{qrId}/category")
+    @Operation(summary = "Assegna o cambia una categoria a un QR Code dell'utente autenticato")
+    public QrCodeResponseDTO assignCategoryToQrCode(@PathVariable Long qrId, @RequestBody @Valid AssignCategoryDTO payload, BindingResult valRes) {
+        if (valRes.hasErrors()) {
+            List<String> errList = valRes.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+
+            throw new ValidationException(errList);
+        }
+        return qrCodesService.assignCategory(qrId, payload.categoryId());
     }
 }

@@ -1,6 +1,7 @@
 package bettapcq.bloodyglyph.services;
 
 
+import bettapcq.bloodyglyph.entities.Category;
 import bettapcq.bloodyglyph.entities.QrCode;
 import bettapcq.bloodyglyph.entities.User;
 import bettapcq.bloodyglyph.exceptions.BadRequestException;
@@ -22,13 +23,15 @@ public class QrCodesService {
     private final UsersService usersService;
     private final QrImagesService qrImagesService;
     private final CloudinaryService cloudinaryService;
+    private final CategoriesService categoriesService;
 
 
-    public QrCodesService(QrCodesRepository qrCodesRepository, UsersService usersService, QrImagesService qrImagesService, CloudinaryService cloudinaryService) {
+    public QrCodesService(QrCodesRepository qrCodesRepository, UsersService usersService, QrImagesService qrImagesService, CloudinaryService cloudinaryService, CategoriesService categoriesService) {
         this.qrCodesRepository = qrCodesRepository;
         this.usersService = usersService;
         this.qrImagesService = qrImagesService;
         this.cloudinaryService = cloudinaryService;
+        this.categoriesService = categoriesService;
 
     }
 
@@ -160,5 +163,19 @@ public class QrCodesService {
         QrCode found = getMyQrEntity(qrId);
         cloudinaryService.deleteQrImage(found.getQrImagePublicId());
         qrCodesRepository.delete(found);
+    }
+
+    public QrCodeResponseDTO assignCategory(
+            Long qrId,
+            Long categoryId
+    ) {
+
+        QrCode qrCode = getMyQrEntity(qrId);
+        Category category = categoriesService.getMyCategoryEntity(categoryId);
+        qrCode.setCategory(category);
+
+        QrCode updatedQrCode = qrCodesRepository.save(qrCode);
+
+        return toQrCodeResponseDTO(updatedQrCode);
     }
 }
