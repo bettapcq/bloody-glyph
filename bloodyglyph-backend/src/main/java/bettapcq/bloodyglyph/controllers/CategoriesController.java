@@ -38,4 +38,29 @@ public class CategoriesController {
 
         return categoriesService.createCategory(payload);
     }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Recupera tutte le categorie dell'utente autenticato")
+    public List<CategoryResponseDTO> getMyCategories() {
+        return categoriesService.getMyCategories();
+    }
+
+    @Operation(summary = "Recupera la categoria dell'utente autenticato tramite l'ID")
+    @GetMapping("/{categoryId}")
+    public CategoryResponseDTO getMyCategory(@PathVariable Long categoryId) {
+        return categoriesService.getCategoryById(categoryId);
+    }
+
+
+    @PatchMapping("/{categoryId}")
+    @Operation(summary = "Modifica categoria")
+    public CategoryResponseDTO updateCategory(@PathVariable Long categoryId, @RequestBody @Valid NewCategoryDTO payload, BindingResult valRes) {
+        if (valRes.hasErrors()) {
+            List<String> errList = valRes.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+
+            throw new ValidationException(errList);
+        }
+        return categoriesService.updateCategory(categoryId, payload);
+    }
 }

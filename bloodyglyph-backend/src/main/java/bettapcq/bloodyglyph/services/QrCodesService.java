@@ -35,7 +35,7 @@ public class QrCodesService {
     private static final int FREE_QR_CODE_LIMIT = 3;
 
 
-    private QrCodeResponseDTO toResponseDTO(QrCode qrCode) {
+    private QrCodeResponseDTO toQrCodeResponseDTO(QrCode qrCode) {
 
         return new QrCodeResponseDTO(
                 qrCode.getQrId(),
@@ -84,7 +84,7 @@ public class QrCodesService {
 
         QrCode savedQrCode = qrCodesRepository.save(qrCode);
 
-        return toResponseDTO(savedQrCode);
+        return toQrCodeResponseDTO(savedQrCode);
 
     }
 
@@ -96,7 +96,7 @@ public class QrCodesService {
         List<QrCode> qrCodes = qrCodesRepository.findByUser(currentUser);
 
         return qrCodes.stream()
-                .map(this::toResponseDTO)
+                .map(this::toQrCodeResponseDTO)
                 .toList();
     }
 
@@ -114,7 +114,7 @@ public class QrCodesService {
 
     public QrCodeResponseDTO getMyQrCodeById(Long qrId) {
 
-        return toResponseDTO(getMyQrEntity(qrId));
+        return toQrCodeResponseDTO(getMyQrEntity(qrId));
 
     }
 
@@ -153,7 +153,7 @@ public class QrCodesService {
         }
 
         QrCode qrCodeUpdated = qrCodesRepository.save(found);
-        return toResponseDTO(qrCodeUpdated);
+        return toQrCodeResponseDTO(qrCodeUpdated);
     }
 
     public void deleteMyQrCode(Long qrId) {
