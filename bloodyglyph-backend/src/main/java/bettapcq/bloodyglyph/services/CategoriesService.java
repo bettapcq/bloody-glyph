@@ -64,6 +64,14 @@ public class CategoriesService {
 
     }
 
+    public void deleteCategory(Long categoryId) {
+        User currentUser = usersService.getCurrentUserEntity();
+        Category category = categoriesRepository.findByCategoryIdAndUser(categoryId, currentUser).orElseThrow(
+                () -> new NotFoundException("Categoria non torvata")
+        );
+        categoriesRepository.delete(category);
+    }
+
     public CategoryResponseDTO updateCategory(Long categoryId, NewCategoryDTO payload) {
 
         User currentUser = usersService.getCurrentUserEntity();

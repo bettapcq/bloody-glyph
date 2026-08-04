@@ -63,4 +63,11 @@ public class CategoriesController {
         }
         return categoriesService.updateCategory(categoryId, payload);
     }
+
+    @DeleteMapping("/{categoryId}")
+    @Operation(summary = "Elimina una categoria dell'utente autenticato")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCategory(@PathVariable Long categoryId) {
+        categoriesService.deleteCategory(categoryId);
+    }
 }
