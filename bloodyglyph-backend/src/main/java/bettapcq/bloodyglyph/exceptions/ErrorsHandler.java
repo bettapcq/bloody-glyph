@@ -2,6 +2,7 @@ package bettapcq.bloodyglyph.exceptions;
 
 
 import bettapcq.bloodyglyph.payloads.errors.ErrorsDTO;
+import bettapcq.bloodyglyph.payloads.errors.ErrorsListDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -24,6 +25,18 @@ public class ErrorsHandler {
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+    // 400 - Validation Exception (errors list)
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorsListDTO> handleValidationException(ValidationException ex) {
+        ErrorsListDTO response = new ErrorsListDTO(
+                ex.getMessage(),
+                LocalDateTime.now(),
+                ex.getErrors()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
 
     // 401 - Bad Credentials
     @ExceptionHandler(BadCredentialsException.class)

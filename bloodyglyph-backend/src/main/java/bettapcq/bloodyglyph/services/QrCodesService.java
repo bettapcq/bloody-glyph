@@ -63,6 +63,7 @@ public class QrCodesService {
             );
         }
 
+
         //Genero l'immagine del QR personalizzato
         byte[] qrImage = qrImagesService.generateQrImage(
                 payload.content()

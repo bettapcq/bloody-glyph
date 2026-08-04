@@ -1,6 +1,7 @@
 package bettapcq.bloodyglyph.controllers;
 
 
+import bettapcq.bloodyglyph.exceptions.ValidationException;
 import bettapcq.bloodyglyph.payloads.requests.NewQrCodeDTO;
 import bettapcq.bloodyglyph.payloads.requests.UpdateQrCodeDTO;
 import bettapcq.bloodyglyph.payloads.responses.QrCodeResponseDTO;
@@ -9,7 +10,9 @@ import bettapcq.bloodyglyph.services.QrImagesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,8 +34,15 @@ public class QrCodesController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Crea un nuovo QR Code")
     public QrCodeResponseDTO createQrCode(
-            @RequestBody @Valid NewQrCodeDTO dto
+            @RequestBody @Valid NewQrCodeDTO dto, BindingResult valRes
     ) {
+
+        if (valRes.hasErrors()) {
+            List<String> errList = valRes.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+
+            throw new ValidationException(errList);
+        }
+
         return qrCodesService.createQrCode(dto);
     }
 
@@ -52,8 +62,14 @@ public class QrCodesController {
     @PatchMapping("/{qrId}")
     public QrCodeResponseDTO updateMyQrCode(
             @PathVariable Long qrId,
-            @RequestBody @Valid UpdateQrCodeDTO payload
+            @RequestBody @Valid UpdateQrCodeDTO payload, BindingResult valRes
     ) {
+        if (valRes.hasErrors()) {
+            List<String> errList = valRes.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+
+            throw new ValidationException(errList);
+        }
+
         return qrCodesService.updateMyQrCode(qrId, payload);
     }
 
