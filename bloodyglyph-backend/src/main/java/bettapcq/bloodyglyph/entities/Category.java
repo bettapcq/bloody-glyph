@@ -1,11 +1,11 @@
 package bettapcq.bloodyglyph.entities;
+
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
