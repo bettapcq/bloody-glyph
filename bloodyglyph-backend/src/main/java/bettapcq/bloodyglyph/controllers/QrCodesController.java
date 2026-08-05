@@ -91,4 +91,11 @@ public class QrCodesController {
         }
         return qrCodesService.assignCategory(qrId, payload.categoryId());
     }
+
+    @Operation(summary = "Dissassegna una categoria a un QR Code dell'utente autenticato")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{qrId}/category")
+    public void disassignCategoryFromQrCode(@PathVariable Long qrId) {
+        qrCodesService.disassignCategory(qrId);
+    }
 }

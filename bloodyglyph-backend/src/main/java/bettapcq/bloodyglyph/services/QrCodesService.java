@@ -178,4 +178,13 @@ public class QrCodesService {
 
         return toQrCodeResponseDTO(updatedQrCode);
     }
+
+    public QrCodeResponseDTO disassignCategory(
+            Long qrId
+    ) {
+        QrCode qrCode = getMyQrEntity(qrId);
+        qrCode.setCategory(null);
+        QrCode updatedQrCode = qrCodesRepository.save(qrCode);
+        return toQrCodeResponseDTO(updatedQrCode);
+    }
 }
