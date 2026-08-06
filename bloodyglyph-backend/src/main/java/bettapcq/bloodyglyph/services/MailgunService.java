@@ -9,6 +9,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
 @Service
 @Slf4j
 public class MailgunService {
@@ -25,7 +29,7 @@ public class MailgunService {
     private void sendEmail(
             String to,
             String subject,
-            String text
+            String html
     ) {
 
         try {
@@ -42,7 +46,7 @@ public class MailgunService {
             body.add("from", mailgunProperties.getFrom());
             body.add("to", to);
             body.add("subject", subject);
-            body.add("text", text);
+            body.add("html", html);
 
             // Effettua una richiesta HTTP POST verso Mailgun
             restClient.post()
@@ -72,21 +76,53 @@ public class MailgunService {
         }
     }
 
+    //Metodo per leggere un template HTML dalla cartella resources/templates/email.
+    private String loadTemplate(String templateName) {
+
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(
+                "templates/email/" + templateName)) {
+
+            if (inputStream == null) {
+                throw new IllegalArgumentException(
+                        "Template email non trovato: " + templateName
+                );
+            }
+
+            return new String(
+                    inputStream.readAllBytes(),
+                    StandardCharsets.UTF_8
+            );
+
+        } catch (IOException e) {
+
+            throw new RuntimeException(
+                    "Errore durante la lettura del template email.",
+                    e
+            );
+
+        }
+
+    }
+
     public void sendRegistrationEmail(User recipient) {
 
-        String subject = "Benvenuto su BloodyGlyph!";
+        String subject = "Benvenutə su BloodyGlyph!";
 
-        String text =
-                "Ciao " + recipient.getUsername() + ",\n\n" +
-                        "Il tuo account è stato creato con successo.\n\n" +
-                        "Da questo momento puoi accedere a BloodyGlyph e iniziare a creare e gestire i tuoi QR Code personalizzati.\n\n" +
-                        "Buon divertimento!\n\n" +
-                        "Il team di BloodyGlyph";
+        String html = loadTemplate("welcome.html");
+
+        html = html.replace(
+                "{{username}}",
+                recipient.getUsername()
+        );
+        html = html.replace(
+                "{{bannerUrl}}",
+                mailgunProperties.getBannerUrl()
+        );
 
         sendEmail(
                 recipient.getEmail(),
                 subject,
-                text
+                html
         );
     }
 

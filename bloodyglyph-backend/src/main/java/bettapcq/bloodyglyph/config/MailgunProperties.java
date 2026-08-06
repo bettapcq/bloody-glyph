@@ -10,6 +10,7 @@ public class MailgunProperties {
     private String apiKey;
     private String domain;
     private String from;
+    private String bannerUrl;
 
     public String getApiKey() {
         return apiKey;
@@ -35,4 +36,11 @@ public class MailgunProperties {
         this.from = from;
     }
 
+    public String getBannerUrl() {
+        return bannerUrl;
+    }
+
+    public void setBannerUrl(String bannerUrl) {
+        this.bannerUrl = bannerUrl;
+    }
 }

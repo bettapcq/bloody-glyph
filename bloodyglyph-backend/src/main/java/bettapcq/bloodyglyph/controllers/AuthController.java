@@ -1,11 +1,13 @@
 package bettapcq.bloodyglyph.controllers;
 
+import bettapcq.bloodyglyph.entities.User;
 import bettapcq.bloodyglyph.exceptions.ValidationException;
 import bettapcq.bloodyglyph.payloads.requests.LoginDTO;
 import bettapcq.bloodyglyph.payloads.requests.RegisterDTO;
 import bettapcq.bloodyglyph.payloads.responses.LoginResponseDTO;
 import bettapcq.bloodyglyph.payloads.responses.UserResponseDTO;
 import bettapcq.bloodyglyph.services.AuthService;
+import bettapcq.bloodyglyph.services.MailgunService;
 import bettapcq.bloodyglyph.services.UsersService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,10 +26,12 @@ public class AuthController {
 
     private final UsersService usersService;
     private final AuthService authService;
+    private final MailgunService mailgunService;
 
-    public AuthController(UsersService usersService, AuthService authService) {
+    public AuthController(UsersService usersService, AuthService authService, MailgunService mailgunService) {
         this.usersService = usersService;
         this.authService = authService;
+        this.mailgunService = mailgunService;
     }
 
 
@@ -67,5 +71,14 @@ public class AuthController {
         return authService.login(payload);
     }
 
+    @PostMapping("/test-email")
+    @Operation(summary = "Invia un'email di test")
+    public void testEmail() {
+
+        User user = usersService.findByEmail("betta.pcq@gmail.com");
+
+        mailgunService.sendRegistrationEmail(user);
+
+    }
 
 }
