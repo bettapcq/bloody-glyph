@@ -3,6 +3,7 @@ package bettapcq.bloodyglyph.services;
 import bettapcq.bloodyglyph.entities.User;
 import bettapcq.bloodyglyph.exceptions.BadRequestException;
 import bettapcq.bloodyglyph.exceptions.NotFoundException;
+import bettapcq.bloodyglyph.payloads.requests.PrivacySettingsDTO;
 import bettapcq.bloodyglyph.payloads.requests.RegisterDTO;
 import bettapcq.bloodyglyph.payloads.responses.UserResponseDTO;
 import bettapcq.bloodyglyph.repositories.UsersRepository;
@@ -42,6 +43,14 @@ public class UsersService implements UserDetailsService {
         return this.usersRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Email non trovata"));
     }
 
+    public UserResponseDTO toUserResponseDTO(User user) {
+        return new UserResponseDTO(
+                user.getUserId(),
+                user.getUsername(),
+                user.getEmail()
+        );
+    }
+
     public UserResponseDTO register(RegisterDTO payload) {
 
         // check username già esistente
@@ -68,11 +77,7 @@ public class UsersService implements UserDetailsService {
         mailgunService.sendRegistrationEmail(savedUser);
 
         //restituisci il dto
-        return new UserResponseDTO(
-                savedUser.getUserId(),
-                savedUser.getUsername(),
-                savedUser.getEmail()
-        );
+        return toUserResponseDTO(savedUser);
     }
 
     //Metodo che mi serve restiture l'entity dell'utente autenticato, recuperandola dal SecurityContext.
@@ -89,11 +94,55 @@ public class UsersService implements UserDetailsService {
 
         User userLogged = getCurrentUserEntity();
 
-        return new UserResponseDTO(
-                userLogged.getUserId(),
-                userLogged.getUsername(),
-                userLogged.getEmail()
-        );
+        return toUserResponseDTO(userLogged);
+    }
+
+    // --- modifica password e email
+    public UserResponseDTO editProfileSecurity(PrivacySettingsDTO payload) {
+        User currentUser = getCurrentUserEntity();
+
+        boolean emailChanged = false;
+        boolean passwordChanged = false;
+
+        //check email già esistente
+
+        if (payload.email() != null && !payload.email().isBlank()) {
+
+            boolean emailExists = usersRepository.existsByEmail(payload.email());
+
+            if (emailExists)
+                throw new BadRequestException("Questa mail è già assegnata a un altro account");
+
+            currentUser.setEmail(payload.email());
+            emailChanged = true;
+        }
+
+        if (payload.newPassword() != null && !payload.newPassword().isBlank()) {
+
+            if (payload.currentPassword() == null ||
+                    payload.currentPassword().isBlank() ||
+                    !passwordEncoder.matches(payload.currentPassword(), currentUser.getPassword())) {
+
+                throw new BadRequestException("Current password wrong");
+            }
+
+            currentUser.setPassword(passwordEncoder.encode(payload.newPassword()));
+
+            passwordChanged = true;
+        }
+
+        usersRepository.save(currentUser);
+
+        if (emailChanged) {
+            mailgunService.sendEmailChangedEmail(currentUser);
+
+        }
+
+        if (passwordChanged) {
+            mailgunService.sendPasswordChangedEmail(currentUser);
+        }
+
+        return toUserResponseDTO(currentUser);
     }
 
     //--- reset password

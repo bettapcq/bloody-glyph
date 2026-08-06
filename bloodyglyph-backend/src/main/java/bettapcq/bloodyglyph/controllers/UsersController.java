@@ -1,12 +1,13 @@
 package bettapcq.bloodyglyph.controllers;
 
+import bettapcq.bloodyglyph.payloads.requests.PrivacySettingsDTO;
 import bettapcq.bloodyglyph.payloads.responses.UserResponseDTO;
 import bettapcq.bloodyglyph.services.UsersService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -27,4 +28,11 @@ public class UsersController {
     public UserResponseDTO getCurrentUser() {
         return usersService.getCurrentUser();
     }
+
+    @PatchMapping("/me/privacy-settings")
+    @Operation(summary = "Permette di modificare email e password dell'utente autenticato")
+    public UserResponseDTO editProfileSecuritySettings(@RequestBody @Valid PrivacySettingsDTO payload, BindingResult valRes) {
+        return usersService.editProfileSecurity(payload);
+    }
+
 }
