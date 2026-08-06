@@ -418,7 +418,7 @@ public class QrImagesService {
 
         try (InputStream logoStream =
                      getClass().getResourceAsStream(
-                             "/images/bloodyglyph-logo-minimal.png"
+                             "/images/bg-logo.png"
                      )) {
 
             if (logoStream == null) {
