@@ -30,6 +30,10 @@ public class QrCode {
     @Column(name = "qr_image_url", nullable = false)
     private String qrImageUrl;
 
+    //codice pubblico per il qrcode, coi la scansione non porta direttamente al contenuto ma al database
+    @Column(nullable = false, unique = true, updatable = false)
+    private String publicCode;
+
     //id cloudinary dell'immagine per cancellarla o cambiarla
     @Column(name = "qr_image_public_id", nullable = false)
     private String qrImagePublicId;

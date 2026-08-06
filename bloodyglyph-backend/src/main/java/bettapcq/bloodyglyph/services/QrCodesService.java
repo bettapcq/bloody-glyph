@@ -11,13 +11,18 @@ import bettapcq.bloodyglyph.payloads.requests.UpdateQrCodeDTO;
 import bettapcq.bloodyglyph.payloads.responses.CloudinaryUploadResponseDTO;
 import bettapcq.bloodyglyph.payloads.responses.QrCodeResponseDTO;
 import bettapcq.bloodyglyph.repositories.QrCodesRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class QrCodesService {
+
+    @Value("${app.backend-url}")
+    private String backendUrl;
 
     private final QrCodesRepository qrCodesRepository;
     private final CurrentUserService currentUserService;
@@ -67,10 +72,14 @@ public class QrCodesService {
         }
 
 
+        // Genero un codice pubblico diverso per ogni QR
+        String publicCode = UUID.randomUUID().toString();
+
+        // Creo l'URL che verrà inserito nell'immagine del QR
+        String qrUrl = backendUrl + "/q/" + publicCode;
+
         //Genero l'immagine del QR personalizzato
-        byte[] qrImage = qrImagesService.generateQrImage(
-                payload.content()
-        );
+        byte[] qrImage = qrImagesService.generateQrImage(qrUrl);
 
         //Carico l'immagine su Cloudinary
         CloudinaryUploadResponseDTO upload =
@@ -80,6 +89,7 @@ public class QrCodesService {
         QrCode qrCode = QrCode.builder()
                 .title(payload.title())
                 .content(payload.content())
+                .publicCode(publicCode)
                 .qrImageUrl(upload.secureUrl())
                 .qrImagePublicId(upload.publicId())
                 .user(currentUser)
@@ -89,6 +99,18 @@ public class QrCodesService {
 
         return toQrCodeResponseDTO(savedQrCode);
 
+    }
+
+    public String resolveDestination(String publicCode) {
+
+        QrCode qrCode = qrCodesRepository.findByPublicCode(publicCode)
+                .orElseThrow(() ->
+                        new NotFoundException(
+                                "Questo QR Code non è più disponibile."
+                        )
+                );
+
+        return qrCode.getContent();
     }
 
 
@@ -132,27 +154,7 @@ public class QrCodesService {
         if (payload.content() != null
                 && !Objects.equals(payload.content(), found.getContent())) {
 
-            // Salvo il publicId della vecchia immagine
-            String oldPublicId = found.getQrImagePublicId();
-
-            // Genero il nuovo QR
-            byte[] qrImage = qrImagesService.generateQrImage(
-                    payload.content()
-            );
-
-            // Carico prima la nuova immagine
-            CloudinaryUploadResponseDTO upload =
-                    cloudinaryService.uploadQrImage(qrImage);
-
-            // Aggiorno tutti i dati nell'entity
             found.setContent(payload.content());
-            found.setQrImageUrl(upload.secureUrl());
-            found.setQrImagePublicId(upload.publicId());
-
-            // Elimino la vecchia immagine solo dopo il nuovo upload
-            if (oldPublicId != null && !oldPublicId.isBlank()) {
-                cloudinaryService.deleteQrImage(oldPublicId);
-            }
         }
 
         QrCode qrCodeUpdated = qrCodesRepository.save(found);

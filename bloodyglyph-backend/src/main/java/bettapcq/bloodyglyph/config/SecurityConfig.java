@@ -43,8 +43,9 @@ public class SecurityConfig {
 
                 //  Comunico quali endpoint sono pubblici e quali protetti
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(
+                                "/auth/**",
+                                "/q/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
