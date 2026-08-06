@@ -4,6 +4,7 @@ import bettapcq.bloodyglyph.entities.User;
 import bettapcq.bloodyglyph.exceptions.ValidationException;
 import bettapcq.bloodyglyph.payloads.requests.LoginDTO;
 import bettapcq.bloodyglyph.payloads.requests.RegisterDTO;
+import bettapcq.bloodyglyph.payloads.responses.GenericResponseDTO;
 import bettapcq.bloodyglyph.payloads.responses.LoginResponseDTO;
 import bettapcq.bloodyglyph.payloads.responses.UserResponseDTO;
 import bettapcq.bloodyglyph.services.AuthService;
@@ -81,4 +82,15 @@ public class AuthController {
 
     }
 
+    //reset password
+    @PostMapping("/reset-password")
+    @Operation(summary = "Se la mail fornita esiste nel db, genera una password temporanea.")
+    public GenericResponseDTO resetPassword(@RequestParam String email) {
+
+        usersService.resetPasswordByEmail(email);
+
+        return new GenericResponseDTO(
+                "Password temporanea inviata. Controlla le email.");
+
+    }
 }

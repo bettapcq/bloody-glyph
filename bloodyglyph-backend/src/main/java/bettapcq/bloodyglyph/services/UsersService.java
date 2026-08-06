@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.util.Collections;
 
 @Service
@@ -93,6 +94,38 @@ public class UsersService implements UserDetailsService {
                 userLogged.getUsername(),
                 userLogged.getEmail()
         );
+    }
+
+    //--- reset password
+
+    public String generatePassword(int length) {
+
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        SecureRandom random = new SecureRandom();
+
+        StringBuilder password = new StringBuilder();
+
+
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(chars.length());
+            password.append(chars.charAt(index));
+        }
+
+        return password.toString();
+    }
+
+    public void resetPasswordByEmail(String email) {
+        //check if email exists in db
+        User found = this.usersRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Non siste un account associato a questa email"));
+
+        if (found != null) {
+            String temporaryPassword = generatePassword(10);
+
+            found.setPassword(passwordEncoder.encode(temporaryPassword));
+            User userUpdated = usersRepository.save(found);
+            mailgunService.sendResetPasswordEmail(userUpdated, temporaryPassword);
+
+        }
     }
 
 

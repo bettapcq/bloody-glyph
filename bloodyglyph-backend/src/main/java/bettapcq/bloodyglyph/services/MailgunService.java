@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+
 @Service
 @Slf4j
 public class MailgunService {
@@ -21,7 +22,7 @@ public class MailgunService {
 
     private final MailgunProperties mailgunProperties;
 
-    public MailgunService(MailgunProperties mailgunProperties) {
+    public MailgunService(MailgunProperties mailgunProperties, UsersService usersService) {
         this.mailgunProperties = mailgunProperties;
     }
 
@@ -126,5 +127,33 @@ public class MailgunService {
         );
     }
 
+
+    public void sendResetPasswordEmail(User recipient, String temporaryPassword) {
+
+        String subject = "Reimpostazione della password";
+
+        String html = loadTemplate("reset-password.html");
+
+        html = html.replace(
+                "{{username}}",
+                recipient.getUsername()
+        );
+
+        html = html.replace(
+                "{{temporaryPassword}}",
+                temporaryPassword
+        );
+
+        html = html.replace(
+                "{{bannerUrl}}",
+                mailgunProperties.getBannerUrl()
+        );
+
+        sendEmail(
+                recipient.getEmail(),
+                subject,
+                html
+        );
+    }
 
 }
