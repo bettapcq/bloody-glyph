@@ -12,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,10 +25,12 @@ public class UsersService implements UserDetailsService {
 
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MailgunService mailgunService;
 
-    public UsersService(UsersRepository usersRepository) {
+    public UsersService(UsersRepository usersRepository, PasswordEncoder passwordEncoder, MailgunService mailgunService) {
         this.usersRepository = usersRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
+        this.mailgunService = mailgunService;
     }
 
     public User findById(Long id) {
@@ -61,6 +62,9 @@ public class UsersService implements UserDetailsService {
 
         //salva in db
         User savedUser = usersRepository.save(newUser);
+
+        // Invia l'email di benvenuto all'utente appena registrato
+        mailgunService.sendRegistrationEmail(savedUser);
 
         //restituisci il dto
         return new UserResponseDTO(
