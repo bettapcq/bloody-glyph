@@ -156,4 +156,49 @@ public class MailgunService {
         );
     }
 
+    public void sendPasswordChangedEmail(User recipient) {
+
+        String subject = "Password aggiornata";
+
+        String html = loadTemplate("password-changed.html");
+
+        html = html.replace(
+                "{{username}}",
+                recipient.getUsername()
+        );
+
+        html = html.replace(
+                "{{bannerUrl}}",
+                mailgunProperties.getBannerUrl()
+        );
+
+        sendEmail(
+                recipient.getEmail(),
+                subject,
+                html
+        );
+    }
+
+    public void sendEmailChangedEmail(User recipient) {
+        String subject = "Email aggiornata";
+
+        String html = loadTemplate("email-changed.html");
+
+        html = html.replace(
+                "{{username}}",
+                recipient.getUsername()
+        );
+
+        html = html.replace(
+                "{{bannerUrl}}",
+                mailgunProperties.getBannerUrl()
+        );
+
+        sendEmail(
+                recipient.getEmail(),
+                subject,
+                html
+        );
+    }
+
 }
