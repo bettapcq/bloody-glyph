@@ -6,6 +6,7 @@ import bettapcq.bloodyglyph.services.UsersService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,13 @@ public class UsersController {
     @Operation(summary = "Permette di modificare email e password dell'utente autenticato")
     public UserResponseDTO editProfileSecuritySettings(@RequestBody @Valid PrivacySettingsDTO payload, BindingResult valRes) {
         return usersService.editProfileSecurity(payload);
+    }
+
+    @DeleteMapping("/me")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Elimina definitivamente l'account dell'utente autenticato")
+    public void deleteMyAccount() {
+        usersService.deleteMyAccount();
     }
 
 }

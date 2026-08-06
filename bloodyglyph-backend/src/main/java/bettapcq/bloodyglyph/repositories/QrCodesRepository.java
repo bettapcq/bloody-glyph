@@ -16,4 +16,6 @@ public interface QrCodesRepository extends JpaRepository<QrCode, Long> {
     Optional<QrCode> findByQrIdAndUser(Long qrId, User user);
 
     int countByUser(User user);
+
+    void deleteAllByUser(User user);
 }

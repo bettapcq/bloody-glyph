@@ -7,9 +7,8 @@ import bettapcq.bloodyglyph.payloads.requests.PrivacySettingsDTO;
 import bettapcq.bloodyglyph.payloads.requests.RegisterDTO;
 import bettapcq.bloodyglyph.payloads.responses.UserResponseDTO;
 import bettapcq.bloodyglyph.repositories.UsersRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,13 +25,20 @@ import java.util.Collections;
 public class UsersService implements UserDetailsService {
 
     private final UsersRepository usersRepository;
+    private final CurrentUserService currentUserService;
     private final PasswordEncoder passwordEncoder;
     private final MailgunService mailgunService;
+    private final QrCodesService qrCodesService;
+    private final CategoriesService categoriesService;
 
-    public UsersService(UsersRepository usersRepository, PasswordEncoder passwordEncoder, MailgunService mailgunService) {
+    public UsersService(UsersRepository usersRepository, PasswordEncoder passwordEncoder, MailgunService mailgunService, QrCodesService qrCodesService, CategoriesService categoriesService, CurrentUserService currentUserService) {
         this.usersRepository = usersRepository;
+        this.currentUserService = currentUserService;
         this.passwordEncoder = passwordEncoder;
         this.mailgunService = mailgunService;
+        this.qrCodesService = qrCodesService;
+        this.categoriesService = categoriesService;
+
     }
 
     public User findById(Long id) {
@@ -80,26 +86,17 @@ public class UsersService implements UserDetailsService {
         return toUserResponseDTO(savedUser);
     }
 
-    //Metodo che mi serve restiture l'entity dell'utente autenticato, recuperandola dal SecurityContext.
-    public User getCurrentUserEntity() {
-        Authentication authentication =
-                SecurityContextHolder
-                        .getContext()
-                        .getAuthentication();
-        return (User) authentication.getPrincipal();
-    }
-
     //Metodo per restituire il dto dell'utente autenticato
     public UserResponseDTO getCurrentUser() {
 
-        User userLogged = getCurrentUserEntity();
+        User userLogged = currentUserService.getCurrentUserEntity();
 
         return toUserResponseDTO(userLogged);
     }
 
     // --- modifica password e email
     public UserResponseDTO editProfileSecurity(PrivacySettingsDTO payload) {
-        User currentUser = getCurrentUserEntity();
+        User currentUser = currentUserService.getCurrentUserEntity();
 
         boolean emailChanged = false;
         boolean passwordChanged = false;
@@ -193,5 +190,18 @@ public class UsersService implements UserDetailsService {
                 .password(found.getPassword())
                 .authorities(Collections.emptyList()) //al momento il progetto non prevede ruoli, quindi uso emptyList
                 .build();
+    }
+
+    //cancella account
+    @Transactional
+    public void deleteMyAccount() {
+
+        User currentUser = currentUserService.getCurrentUserEntity();
+
+        qrCodesService.deleteAllByUser(currentUser);
+
+        categoriesService.deleteAllByUser(currentUser);
+
+        usersRepository.delete(currentUser);
     }
 }

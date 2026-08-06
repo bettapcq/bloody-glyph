@@ -22,7 +22,7 @@ public class MailgunService {
 
     private final MailgunProperties mailgunProperties;
 
-    public MailgunService(MailgunProperties mailgunProperties, UsersService usersService) {
+    public MailgunService(MailgunProperties mailgunProperties) {
         this.mailgunProperties = mailgunProperties;
     }
 

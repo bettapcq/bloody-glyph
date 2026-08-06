@@ -20,15 +20,15 @@ import java.util.Objects;
 public class QrCodesService {
 
     private final QrCodesRepository qrCodesRepository;
-    private final UsersService usersService;
+    private final CurrentUserService currentUserService;
     private final QrImagesService qrImagesService;
     private final CloudinaryService cloudinaryService;
     private final CategoriesService categoriesService;
 
 
-    public QrCodesService(QrCodesRepository qrCodesRepository, UsersService usersService, QrImagesService qrImagesService, CloudinaryService cloudinaryService, CategoriesService categoriesService) {
+    public QrCodesService(QrCodesRepository qrCodesRepository, QrImagesService qrImagesService, CloudinaryService cloudinaryService, CategoriesService categoriesService, CurrentUserService currentUserService) {
         this.qrCodesRepository = qrCodesRepository;
-        this.usersService = usersService;
+        this.currentUserService = currentUserService;
         this.qrImagesService = qrImagesService;
         this.cloudinaryService = cloudinaryService;
         this.categoriesService = categoriesService;
@@ -54,7 +54,7 @@ public class QrCodesService {
     }
 
     public QrCodeResponseDTO createQrCode(NewQrCodeDTO payload) {
-        User currentUser = usersService.getCurrentUserEntity();
+        User currentUser = currentUserService.getCurrentUserEntity();
 
         long currentQrCodes = qrCodesRepository.countByUser(currentUser);
 
@@ -94,7 +94,7 @@ public class QrCodesService {
 
     public List<QrCodeResponseDTO> getMyQrCodes() {
 
-        User currentUser = usersService.getCurrentUserEntity();
+        User currentUser = currentUserService.getCurrentUserEntity();
 
         List<QrCode> qrCodes = qrCodesRepository.findByUser(currentUser);
 
@@ -106,7 +106,7 @@ public class QrCodesService {
 
     private QrCode getMyQrEntity(Long qrId) {
 
-        User currentUser = usersService.getCurrentUserEntity();
+        User currentUser = currentUserService.getCurrentUserEntity();
 
         return qrCodesRepository
                 .findByQrIdAndUser(qrId, currentUser)
@@ -187,4 +187,19 @@ public class QrCodesService {
         QrCode updatedQrCode = qrCodesRepository.save(qrCode);
         return toQrCodeResponseDTO(updatedQrCode);
     }
+
+    public void deleteAllByUser(User user) {
+
+        List<QrCode> qrCodes = qrCodesRepository.findByUser(user);
+
+        for (QrCode qrCode : qrCodes) {
+
+            if (qrCode.getQrImagePublicId() != null) {
+                cloudinaryService.deleteQrImage(qrCode.getQrImagePublicId());
+            }
+        }
+
+        qrCodesRepository.deleteAllByUser(user);
+    }
+
 }

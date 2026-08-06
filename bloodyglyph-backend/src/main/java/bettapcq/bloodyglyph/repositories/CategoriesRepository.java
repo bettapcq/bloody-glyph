@@ -16,4 +16,6 @@ public interface CategoriesRepository extends JpaRepository<Category, Long> {
     Optional<Category> findByCategoryIdAndUser(Long categoryId, User user);
 
     boolean existsByNameIgnoreCaseAndUser(String name, User user);
+
+    void deleteAllByUser(User user);
 }

@@ -15,11 +15,11 @@ import java.util.List;
 public class CategoriesService {
 
     private final CategoriesRepository categoriesRepository;
-    private final UsersService usersService;
+    private final CurrentUserService currentUserService;
 
-    public CategoriesService(CategoriesRepository categoriesRepository, UsersService usersService) {
+    public CategoriesService(CategoriesRepository categoriesRepository, CurrentUserService currentUserService) {
         this.categoriesRepository = categoriesRepository;
-        this.usersService = usersService;
+        this.currentUserService = currentUserService;
     }
 
     public CategoryResponseDTO toCategoryResponseDTO(Category category) {
@@ -31,7 +31,7 @@ public class CategoriesService {
 
     public CategoryResponseDTO createCategory(NewCategoryDTO payload) {
 
-        User currentUser = usersService.getCurrentUserEntity();
+        User currentUser = currentUserService.getCurrentUserEntity();
 
         if (categoriesRepository.existsByNameIgnoreCaseAndUser(payload.name(), currentUser)) {
             throw new BadRequestException("La categoria esiste già");
@@ -49,20 +49,20 @@ public class CategoriesService {
     }
 
     public Category getMyCategoryEntity(Long categoryId) {
-        User currentUser = usersService.getCurrentUserEntity();
+        User currentUser = currentUserService.getCurrentUserEntity();
         Category found = categoriesRepository.findByCategoryIdAndUser(categoryId, currentUser).orElseThrow(() -> new NotFoundException("categoria non trovata"));
         return found;
     }
 
 
     public CategoryResponseDTO getMyCategoryById(Long categoryId) {
-        User currentUser = usersService.getCurrentUserEntity();
+        User currentUser = currentUserService.getCurrentUserEntity();
         Category category = this.getMyCategoryEntity(categoryId);
         return this.toCategoryResponseDTO(category);
     }
 
     public List<CategoryResponseDTO> getMyCategories() {
-        User currentUser = usersService.getCurrentUserEntity();
+        User currentUser = currentUserService.getCurrentUserEntity();
         List<Category> myCategories = categoriesRepository.findByUser(currentUser);
         return myCategories.stream()
                 .map(this::toCategoryResponseDTO)
@@ -71,7 +71,7 @@ public class CategoriesService {
     }
 
     public void deleteCategory(Long categoryId) {
-        User currentUser = usersService.getCurrentUserEntity();
+        User currentUser = currentUserService.getCurrentUserEntity();
         Category category = this.getMyCategoryEntity(categoryId);
 
         categoriesRepository.delete(category);
@@ -79,12 +79,17 @@ public class CategoriesService {
 
     public CategoryResponseDTO updateCategory(Long categoryId, NewCategoryDTO payload) {
 
-        User currentUser = usersService.getCurrentUserEntity();
+        User currentUser = currentUserService.getCurrentUserEntity();
         Category category = this.getMyCategoryEntity(categoryId);
 
         category.setName(payload.name().trim());
         Category categoryUpdated = categoriesRepository.save(category);
 
         return this.toCategoryResponseDTO(categoryUpdated);
+    }
+
+    public void deleteAllByUser(User user) {
+
+        categoriesRepository.deleteAllByUser(user);
     }
 }
