@@ -55,3 +55,27 @@ h6 {
   font-family: var(--font-title);
 }
 
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: var(--color-bg);
+}
+
+/* effetto gradiente al bordo inferiore della navbar (viene creata una linea che si sfuma)  */
+
+.navbar::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-primary),
+    transparent
+  );
+}
