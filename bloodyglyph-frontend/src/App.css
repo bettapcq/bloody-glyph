@@ -1,1 +1,57 @@
 @import "tailwindcss";
+
+/* font importati */
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter-VariableFont_opsz,wght.ttf")
+    format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Cinzel";
+  src: url("../assets/fonts/Cinzel-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Cinzel";
+  src: url("../assets/fonts/Cinzel-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+
+/* palette di colori e font testi */
+
+:root {
+  --color-bg: #0a0a0a;
+  --color-surface: #151515;
+
+  --color-primary: #7a0c12;
+  --color-primary-hover: #a3151e;
+
+  --color-text: #f4efe1;
+  --color-text-secondary: #b8b8b8;
+
+  --color-border: #2a2a2a;
+
+  --font-title: "Cinzel", serif;
+  --font-body: "Inter", sans-serif;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-title);
+}
+
