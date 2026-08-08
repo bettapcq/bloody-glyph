@@ -226,8 +226,22 @@ public class QrCodesService {
     }
 
     public void deleteMyQrCode(Long qrId) {
+
         QrCode found = getMyQrEntity(qrId);
-        cloudinaryService.deleteQrImage(found.getQrImagePublicId());
+
+        if (found.getContentPublicId() != null) {
+
+            cloudinaryService.deleteContent(
+                    found.getContentPublicId(),
+                    found.getContentType()
+            );
+
+        }
+
+        cloudinaryService.deleteQrImage(
+                found.getQrImagePublicId()
+        );
+
         qrCodesRepository.delete(found);
     }
 

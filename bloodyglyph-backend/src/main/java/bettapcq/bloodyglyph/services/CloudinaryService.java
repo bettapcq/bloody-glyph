@@ -89,6 +89,7 @@ public class CloudinaryService {
     }
 
 
+    // elimina l'immagine qr da Cloudinary
     public void deleteQrImage(String publicId) {
         try {
             cloudinary.uploader().destroy(
@@ -100,6 +101,39 @@ public class CloudinaryService {
         } catch (IOException exception) {
             throw new RuntimeException(
                     "Errore durante l'eliminazione del QR code da Cloudinary",
+                    exception
+            );
+        }
+    }
+
+
+    // Elimina il file (pdf o image) salvato su Cloudinary
+    public void deleteContent(
+            String publicId,
+            QrContentType contentType
+    ) {
+
+        try {
+
+            String resourceType = switch (contentType) {
+                case IMAGE -> "image";
+                case PDF -> "raw";
+                default -> throw new IllegalArgumentException(
+                        "Tipo di contenuto non supportato."
+                );
+            };
+
+            cloudinary.uploader().destroy(
+                    publicId,
+                    ObjectUtils.asMap(
+                            "resource_type", resourceType
+                    )
+            );
+
+        } catch (IOException exception) {
+
+            throw new RuntimeException(
+                    "Errore durante l'eliminazione del contenuto da Cloudinary",
                     exception
             );
         }
