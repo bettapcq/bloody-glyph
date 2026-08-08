@@ -2,6 +2,7 @@ package bettapcq.bloodyglyph.controllers;
 
 import bettapcq.bloodyglyph.services.QrCodesService;
 import io.swagger.v3.oas.annotations.Hidden;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +35,12 @@ public class PublicQrController {
         return ResponseEntity
                 .status(HttpStatus.FOUND)
                 .location(URI.create(destination))
+                .header(
+                        HttpHeaders.CACHE_CONTROL,
+                        "no-store, no-cache, must-revalidate"
+                )
+                .header(HttpHeaders.PRAGMA, "no-cache")
                 .build();
+
     }
 }

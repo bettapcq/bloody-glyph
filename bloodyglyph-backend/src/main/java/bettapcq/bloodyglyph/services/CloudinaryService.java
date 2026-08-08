@@ -59,7 +59,7 @@ public class CloudinaryService {
 
                 case PDF -> {
                     folder = "bloodyglyph/content/pdfs";
-                    resourceType = "raw";
+                    resourceType = "image";
                 }
 
                 default -> throw new IllegalArgumentException(
@@ -116,8 +116,7 @@ public class CloudinaryService {
         try {
 
             String resourceType = switch (contentType) {
-                case IMAGE -> "image";
-                case PDF -> "raw";
+                case IMAGE, PDF -> "image";
                 default -> throw new IllegalArgumentException(
                         "Tipo di contenuto non supportato."
                 );

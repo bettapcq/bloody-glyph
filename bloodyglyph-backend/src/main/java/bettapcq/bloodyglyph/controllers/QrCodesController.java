@@ -8,7 +8,6 @@ import bettapcq.bloodyglyph.payloads.requests.UpdateQrCodeDTO;
 import bettapcq.bloodyglyph.payloads.requests.UploadQrCodeDTO;
 import bettapcq.bloodyglyph.payloads.responses.QrCodeResponseDTO;
 import bettapcq.bloodyglyph.services.QrCodesService;
-import bettapcq.bloodyglyph.services.QrImagesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -26,11 +25,9 @@ import java.util.List;
 public class QrCodesController {
 
     private final QrCodesService qrCodesService;
-    private final QrImagesService qrImagesService;
 
     public QrCodesController(QrCodesService qrCodesService) {
         this.qrCodesService = qrCodesService;
-        this.qrImagesService = new QrImagesService();
     }
 
     @PostMapping
@@ -61,7 +58,7 @@ public class QrCodesController {
         return qrCodesService.getMyQrCodeById(qrId);
     }
 
-    @Operation(summary = "Modifica un QR Code dell'utente autenticato")
+    @Operation(summary = "Endpoint dedicato alla modifica di QR Code in un tipo URL")
     @PatchMapping("/{qrId}")
     public QrCodeResponseDTO updateMyQrCode(
             @PathVariable Long qrId,
@@ -107,6 +104,22 @@ public class QrCodesController {
             @ModelAttribute @Valid UploadQrCodeDTO payload
     ) {
         return qrCodesService.createQrCodeFromFile(
+                payload,
+                payload.file()
+        );
+    }
+
+    @PatchMapping(
+            value = "/{qrId}/upload",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    @Operation(
+            summary = "Endpoint dedicato alla modifica di QR Code in un tipo PDF o IMAGE"
+    )
+    public QrCodeResponseDTO updateQrCodeFromFile(
+            @PathVariable Long qrId, @ModelAttribute @Valid UploadQrCodeDTO payload) {
+        return qrCodesService.updateMyQrCodeFile(
+                qrId,
                 payload,
                 payload.file()
         );
