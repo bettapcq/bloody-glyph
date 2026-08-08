@@ -3,6 +3,7 @@ package bettapcq.bloodyglyph.services;
 import bettapcq.bloodyglyph.config.MailgunProperties;
 import bettapcq.bloodyglyph.entities.User;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -40,14 +41,20 @@ public class MailgunService {
                             + mailgunProperties.getDomain()
                             + "/messages";
 
-            // Crea il body della richiesta nel formato application/x-www-form-urlencoded richiesto da Mailgun
-            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+            ClassPathResource banner =
+                    new ClassPathResource("images/bloodyglyph-banner.png");
 
-            // aggiunge al body mittente, destinatario, oggetto e testo dell' email
+
+            // Crea il body della richiesta nel formato application/x-www-form-urlencoded richiesto da Mailgun
+            MultiValueMap<String, Object> body =
+                    new LinkedMultiValueMap<>();
+
+            // aggiunge al body mittente, destinatario, oggetto, testo dell' email e banner
             body.add("from", mailgunProperties.getFrom());
             body.add("to", to);
             body.add("subject", subject);
             body.add("html", html);
+            body.add("inline", banner);
 
             // Effettua una richiesta HTTP POST verso Mailgun
             restClient.post()
@@ -61,7 +68,7 @@ public class MailgunService {
                         );
                     })
                     // Formato dei dati inviati
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
                     // Inserimento del body che ho costruito
                     .body(body)
                     // Invio della richiesta
@@ -107,6 +114,7 @@ public class MailgunService {
 
     public void sendRegistrationEmail(User recipient) {
 
+
         String subject = "Benvenutə su BloodyGlyph!";
 
         String html = loadTemplate("welcome.html");
@@ -114,10 +122,6 @@ public class MailgunService {
         html = html.replace(
                 "{{username}}",
                 recipient.getUsername()
-        );
-        html = html.replace(
-                "{{bannerUrl}}",
-                mailgunProperties.getBannerUrl()
         );
 
         sendEmail(
@@ -144,11 +148,6 @@ public class MailgunService {
                 temporaryPassword
         );
 
-        html = html.replace(
-                "{{bannerUrl}}",
-                mailgunProperties.getBannerUrl()
-        );
-
         sendEmail(
                 recipient.getEmail(),
                 subject,
@@ -167,11 +166,6 @@ public class MailgunService {
                 recipient.getUsername()
         );
 
-        html = html.replace(
-                "{{bannerUrl}}",
-                mailgunProperties.getBannerUrl()
-        );
-
         sendEmail(
                 recipient.getEmail(),
                 subject,
@@ -187,11 +181,6 @@ public class MailgunService {
         html = html.replace(
                 "{{username}}",
                 recipient.getUsername()
-        );
-
-        html = html.replace(
-                "{{bannerUrl}}",
-                mailgunProperties.getBannerUrl()
         );
 
         sendEmail(
