@@ -41,7 +41,15 @@
 
 body {
   margin: 0;
-  background-color: var(--color-bg);
+  background:
+    radial-gradient(
+      ellipse at 65% 45%,
+      rgba(122, 12, 17, 0.73) 0%,
+      rgba(70, 8, 12, 0.16) 30%,
+      transparent 70%
+    ),
+    var(--color-bg);
+
   color: var(--color-text);
   font-family: var(--font-body);
 }
