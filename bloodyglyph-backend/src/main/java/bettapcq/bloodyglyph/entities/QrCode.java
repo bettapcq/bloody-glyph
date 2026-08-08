@@ -30,13 +30,21 @@ public class QrCode {
     @Column(name = "qr_image_url", nullable = false)
     private String qrImageUrl;
 
-    //codice pubblico per il qrcode, coi la scansione non porta direttamente al contenuto ma al database
+    //codice pubblico per il qrcode, così la scansione non porta direttamente al contenuto ma all'endpoint dedicato
     @Column(nullable = false, unique = true, updatable = false)
     private String publicCode;
 
     //id cloudinary dell'immagine per cancellarla o cambiarla
     @Column(name = "qr_image_public_id", nullable = false)
     private String qrImagePublicId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "content_type", nullable = false)
+    private QrContentType contentType;
+
+    // id per prendere da cloudinary il contenuto nel caso fosse un pdf o un'immagine
+    @Column(name = "content_public_id")
+    private String contentPublicId;
 
     @Column(nullable = false, name = "created_at")
     private LocalDateTime createdAt;

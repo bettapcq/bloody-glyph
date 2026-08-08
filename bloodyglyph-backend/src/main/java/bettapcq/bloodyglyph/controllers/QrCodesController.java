@@ -5,6 +5,7 @@ import bettapcq.bloodyglyph.exceptions.ValidationException;
 import bettapcq.bloodyglyph.payloads.requests.AssignCategoryDTO;
 import bettapcq.bloodyglyph.payloads.requests.NewQrCodeDTO;
 import bettapcq.bloodyglyph.payloads.requests.UpdateQrCodeDTO;
+import bettapcq.bloodyglyph.payloads.requests.UploadQrCodeDTO;
 import bettapcq.bloodyglyph.payloads.responses.QrCodeResponseDTO;
 import bettapcq.bloodyglyph.services.QrCodesService;
 import bettapcq.bloodyglyph.services.QrImagesService;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +35,7 @@ public class QrCodesController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Crea un nuovo QR Code")
+    @Operation(summary = "Crea un nuovo QR Code di tipo URL")
     public QrCodeResponseDTO createQrCode(
             @RequestBody @Valid NewQrCodeDTO dto, BindingResult valRes
     ) {
@@ -44,7 +46,7 @@ public class QrCodesController {
             throw new ValidationException(errList);
         }
 
-        return qrCodesService.createQrCode(dto);
+        return qrCodesService.createQrCodeFromLink(dto);
     }
 
     @Operation(summary = "Recupera tutti i QR Code dell'utente autenticato")
@@ -90,6 +92,24 @@ public class QrCodesController {
             throw new ValidationException(errList);
         }
         return qrCodesService.assignCategory(qrId, payload.categoryId());
+    }
+
+
+    @PostMapping(
+            value = "/upload",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    @Operation(
+            summary = "Endpoint dedicato alla creazione di QR Code di tipo PDF o IMAGE"
+    )
+    @ResponseStatus(HttpStatus.CREATED)
+    public QrCodeResponseDTO createQrCodeFromFile(
+            @ModelAttribute @Valid UploadQrCodeDTO payload
+    ) {
+        return qrCodesService.createQrCodeFromFile(
+                payload,
+                payload.file()
+        );
     }
 
     @Operation(summary = "Dissassegna una categoria a un QR Code dell'utente autenticato")

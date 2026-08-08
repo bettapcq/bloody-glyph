@@ -3,16 +3,19 @@ package bettapcq.bloodyglyph.services;
 
 import bettapcq.bloodyglyph.entities.Category;
 import bettapcq.bloodyglyph.entities.QrCode;
+import bettapcq.bloodyglyph.entities.QrContentType;
 import bettapcq.bloodyglyph.entities.User;
 import bettapcq.bloodyglyph.exceptions.BadRequestException;
 import bettapcq.bloodyglyph.exceptions.NotFoundException;
 import bettapcq.bloodyglyph.payloads.requests.NewQrCodeDTO;
 import bettapcq.bloodyglyph.payloads.requests.UpdateQrCodeDTO;
+import bettapcq.bloodyglyph.payloads.requests.UploadQrCodeDTO;
 import bettapcq.bloodyglyph.payloads.responses.CloudinaryUploadResponseDTO;
 import bettapcq.bloodyglyph.payloads.responses.QrCodeResponseDTO;
 import bettapcq.bloodyglyph.repositories.QrCodesRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -58,7 +61,7 @@ public class QrCodesService {
         );
     }
 
-    public QrCodeResponseDTO createQrCode(NewQrCodeDTO payload) {
+    private User validateQrLimit() {
         User currentUser = currentUserService.getCurrentUserEntity();
 
         long currentQrCodes = qrCodesRepository.countByUser(currentUser);
@@ -71,9 +74,10 @@ public class QrCodesService {
             );
         }
 
+        return currentUser;
+    }
 
-        // Genero un codice pubblico diverso per ogni QR
-        String publicCode = UUID.randomUUID().toString();
+    private CloudinaryUploadResponseDTO generateQrImage(String publicCode) {
 
         // Creo l'URL che verrà inserito nell'immagine del QR
         String qrUrl = backendUrl + "/q/" + publicCode;
@@ -82,16 +86,36 @@ public class QrCodesService {
         byte[] qrImage = qrImagesService.generateQrImage(qrUrl);
 
         //Carico l'immagine su Cloudinary
-        CloudinaryUploadResponseDTO upload =
-                cloudinaryService.uploadQrImage(qrImage);
+        return cloudinaryService.uploadQrImage(qrImage);
+    }
+
+    public QrCodeResponseDTO createQrCodeFromLink(NewQrCodeDTO payload) {
+
+
+        User currentUser = validateQrLimit();
+
+
+        if (payload.contentType() != QrContentType.URL) {
+            throw new BadRequestException(
+                    "Per immagini e PDF utilizza l'endpoint dedicato."
+            );
+        }
+
+        // Genero un codice pubblico diverso per ogni QR
+        String publicCode = UUID.randomUUID().toString();
+
+        CloudinaryUploadResponseDTO qrUpload =
+                generateQrImage(publicCode);
+
 
         //Creo l'entity
         QrCode qrCode = QrCode.builder()
                 .title(payload.title())
                 .content(payload.content())
+                .contentType(payload.contentType())
                 .publicCode(publicCode)
-                .qrImageUrl(upload.secureUrl())
-                .qrImagePublicId(upload.publicId())
+                .qrImageUrl(qrUpload.secureUrl())
+                .qrImagePublicId(qrUpload.publicId())
                 .user(currentUser)
                 .build();
 
@@ -99,6 +123,46 @@ public class QrCodesService {
 
         return toQrCodeResponseDTO(savedQrCode);
 
+    }
+
+    public QrCodeResponseDTO createQrCodeFromFile(
+            UploadQrCodeDTO payload,
+            MultipartFile file
+    ) {
+
+        User currentUser = validateQrLimit();
+
+        if (payload.contentType() == QrContentType.URL) {
+            throw new BadRequestException(
+                    "Per i link utilizza l'endpoint dedicato."
+            );
+        }
+
+        CloudinaryUploadResponseDTO contentUpload =
+                cloudinaryService.uploadContent(
+                        file,
+                        payload.contentType()
+                );
+
+        String publicCode = UUID.randomUUID().toString();
+
+        CloudinaryUploadResponseDTO qrUpload =
+                generateQrImage(publicCode);
+
+        QrCode qrCode = QrCode.builder()
+                .title(payload.title())
+                .content(contentUpload.secureUrl())
+                .contentType(payload.contentType())
+                .contentPublicId(contentUpload.publicId())
+                .publicCode(publicCode)
+                .qrImageUrl(qrUpload.secureUrl())
+                .qrImagePublicId(qrUpload.publicId())
+                .user(currentUser)
+                .build();
+
+        QrCode savedQrCode = qrCodesRepository.save(qrCode);
+
+        return toQrCodeResponseDTO(savedQrCode);
     }
 
     public String resolveDestination(String publicCode) {

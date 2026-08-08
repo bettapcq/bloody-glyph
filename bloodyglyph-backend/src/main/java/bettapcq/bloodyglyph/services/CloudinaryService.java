@@ -1,9 +1,11 @@
 package bettapcq.bloodyglyph.services;
 
+import bettapcq.bloodyglyph.entities.QrContentType;
 import bettapcq.bloodyglyph.payloads.responses.CloudinaryUploadResponseDTO;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Map;
@@ -35,6 +37,52 @@ public class CloudinaryService {
         } catch (IOException exception) {
             throw new RuntimeException(
                     "Errore durante il caricamento del QR code su Cloudinary",
+                    exception
+            );
+        }
+    }
+
+
+    public CloudinaryUploadResponseDTO uploadContent(
+            MultipartFile file,
+            QrContentType contentType
+    ) {
+        try {
+            String folder;
+            String resourceType;
+
+            switch (contentType) {
+                case IMAGE -> {
+                    folder = "bloodyglyph/content/images";
+                    resourceType = "image";
+                }
+
+                case PDF -> {
+                    folder = "bloodyglyph/content/pdfs";
+                    resourceType = "raw";
+                }
+
+                default -> throw new IllegalArgumentException(
+                        "Tipo di contenuto non supportato per l'upload."
+                );
+            }
+
+            Map<?, ?> result = cloudinary.uploader().upload(
+                    file.getBytes(),
+                    ObjectUtils.asMap(
+                            "folder", folder,
+                            "resource_type", resourceType
+                    )
+            );
+
+            return new CloudinaryUploadResponseDTO(
+                    result.get("public_id").toString(),
+                    result.get("secure_url").toString()
+            );
+
+        } catch (IOException exception) {
+            throw new RuntimeException(
+                    "Errore durante il caricamento del contenuto su Cloudinary",
                     exception
             );
         }
