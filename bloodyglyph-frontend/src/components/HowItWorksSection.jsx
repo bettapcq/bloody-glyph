@@ -9,7 +9,7 @@ function HowItWorksSection() {
           UN QR. CONTENUTI DIVERSI
         </h1>
         <div className="mx-auto flex flex-col lg:flex-row max-w-7xl items-center justify-between text-center">
-          <div className="mx-auto flex w-full max-w-xs flex-col items-center lg:mx-0">
+          <div className="mx-auto my-4 flex w-full max-w-xs flex-col items-center lg:mx-0">
             <img
               src="/logo-create.png"
               alt="Crea QR Code"
@@ -23,7 +23,7 @@ function HowItWorksSection() {
             </p>
           </div>
           <div className="how-it-works-divider relative mx-auto flex w-full items-center justify-center">
-            <div className="mx-auto flex w-full max-w-xs flex-col items-center lg:mx-0">
+            <div className="mx-auto  my-4 flex w-full max-w-xs flex-col items-center lg:mx-0">
               <img
                 src="/logo-organize.png"
                 alt="Organizza QR Code"
@@ -37,7 +37,7 @@ function HowItWorksSection() {
             </div>
           </div>
 
-          <div className="mx-auto flex w-full max-w-xs flex-col items-center lg:mx-0">
+          <div className="mx-auto  my-4 flex w-full max-w-xs flex-col items-center lg:mx-0">
             <img
               src="/logo-update.png"
               alt="Aggiorna QR Code"
