@@ -30,10 +30,11 @@
   --color-primary: #7a0c12;
   --color-primary-hover: #a3151e;
 
-  --color-text: #f4efe1;
+  --color-text: #ddd8c8;
   --color-text-secondary: #949191;
 
   --color-border: #2a2a2a;
+  --color-border-light: #828181;
 
   --font-title: "Cinzel", serif;
   --font-body: "Inter", sans-serif;
@@ -42,12 +43,7 @@
 body {
   margin: 0;
   background:
-    radial-gradient(
-      ellipse at 65% 45%,
-      rgba(122, 12, 17, 0.73) 0%,
-      rgba(70, 8, 12, 0.16) 30%,
-      transparent 70%
-    ),
+    linear-gradient(222deg, rgba(10, 10, 10, 1) 52%, rgb(63, 6, 9) 100%),
     var(--color-bg);
 
   color: var(--color-text);
@@ -86,4 +82,38 @@ h6 {
     var(--color-primary),
     transparent
   );
+}
+
+/* effetto gradiente come divisori how-it-works (viene creata una linea che si sfuma)  */
+
+.how-it-works-divider::before,
+.how-it-works-divider::after {
+  content: "";
+  display: none;
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 100%;
+
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--color-border-light),
+    transparent
+  );
+}
+
+@media (min-width: 1024px) {
+  .how-it-works-divider::before,
+  .how-it-works-divider::after {
+    display: block;
+  }
+
+  .how-it-works-divider::before {
+    left: 0;
+  }
+
+  .how-it-works-divider::after {
+    right: 0;
+  }
 }
