@@ -1,3 +1,4 @@
+import Footer from "../components/Footer";
 import Hero from "../components/Hero";
 import Navbar from "../components/Navbar";
 
@@ -7,6 +8,7 @@ function HomePage() {
       <main className="relative min-h-screen">
         <Navbar />
         <Hero />
+        <Footer />
       </main>
     </>
   );
