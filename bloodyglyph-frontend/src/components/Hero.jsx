@@ -53,7 +53,7 @@ const Hero = () => {
         {/* FLUSSO DESTINAZIONE */}
         <div className="mx-auto flex w-full max-w-xs flex-col items-center lg:mx-0">
           <div className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface)]/60 p-4 backdrop-blur-sm">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center md:justify-start gap-3">
               <FiFileText className="text-xl text-[var(--color-text)]" />
 
               <div>
@@ -74,11 +74,11 @@ const Hero = () => {
           <FiArrowDown className="my-3 text-[var(--color-primary-hover)]" />
 
           <div className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface)]/60 p-4 backdrop-blur-sm">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center md:justify-start gap-3">
               <FiFileText className="text-xl text-[var(--color-text)]" />
 
               <div>
-                <p className="text-sm">NuovoMenu.pdf</p>
+                <p className="text-sm ">NuovoMenu.pdf</p>
                 <p className="text-xs text-[var(--color-text-secondary)]">
                   PDF
                 </p>
@@ -89,7 +89,7 @@ const Hero = () => {
           <FiArrowDown className="my-3 text-[var(--color-primary-hover)]" />
 
           <div className="w-full rounded-md border border-[var(--color-primary)]/40 bg-black/30 p-4">
-            <div className="flex items-center gap-3 text-[var(--color-primary-hover)]">
+            <div className="flex items-center justify-center md:justify-start gap-3 text-[var(--color-primary-hover)]">
               <FiCheckCircle className="text-xl" />
 
               <p className="font-[var(--font-title)] text-sm uppercase leading-5">
