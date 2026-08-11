@@ -1,11 +1,11 @@
 function Footer() {
   return (
-    <footer className="w-full grid gap-2 lg:grid-cols-[1fr_2fr_1fr] lg:gap-8 bg-[var(--color-surface)]/60 backdrop-blur-sm">
+    <footer className="w-full grid gap-4 lg:grid-cols-[1fr_2fr_1fr] lg:gap-8 bg-[var(--color-surface)]/60 backdrop-blur-sm py-4">
       {" "}
-      <div className="flex flex max-w-7xl  items-center justify-center md:justify-start gap-1 px-4 py-4 text-[var(--color-text-secondary)]">
+      <div className="flex flex max-w-7xl  items-center justify-center md:justify-start gap-1 lg:px-4 lg:py-4 text-[var(--color-text-secondary)]">
         <img src="/logo-circle.png" alt="Logo" className="h-16 w-auto" />
       </div>
-      <div className="mx-auto flex flex-col max-w-7xl  items-center justify-center gap-1 px-4 py-4 text-[var(--color-text-secondary)]">
+      <div className="mx-auto flex flex-col max-w-7xl  items-center justify-center gap-1 lg:px-4 lg:py-4 text-[var(--color-text-secondary)]">
         <p className="text-xs">
           &copy; {new Date().getFullYear()} BloodyGlyph. All rights reserved.
         </p>
@@ -21,7 +21,7 @@ function Footer() {
           </a>
         </p>
       </div>
-      <div className="flex flex-col max-w-7xl  items-center md:items-end justify-center gap-1 px-4 py-4 text-[var(--color-text-secondary)]">
+      <div className="flex flex-row lg:flex-col max-w-7xl  items-center md:items-end justify-center gap-1 lg:px-4 lg:py-4 text-[var(--color-text-secondary)]">
         <p className="text-xs">
           <a
             href="/cookie-policy"
