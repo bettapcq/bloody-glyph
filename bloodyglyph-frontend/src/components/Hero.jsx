@@ -3,8 +3,9 @@ import { FiFileText, FiCheckCircle, FiArrowDown } from "react-icons/fi";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen bg-[var(--color-bg)] overflow-hidden px-5 pb-16 pt-35 text-[var(--color-text)] md:px-8 lg:pt-50">
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.9fr_1.2fr_0.55fr] lg:gap-8">
+    <section className="relative overflow-hidden px-5 pb-5 pt-35 text-[var(--color-text)] md:px-8 lg:pt-50">
+      <div className="relative mx-auto grid max-w-[1500px] items-center gap-8 lg:grid-cols-[1fr_1.5fr_0.65fr]">
+        {" "}
         {/* TESTO */}
         <div className="z-10 text-center lg:text-left">
           <h1 className="font-[var(--font-title)] text-4xl font-bold uppercase leading-[1.08] sm:text-5xl lg:text-6xl xl:text-7xl">
@@ -38,18 +39,16 @@ const Hero = () => {
             </a>
           </div>
         </div>
-
         {/* QR */}
-        <div className="relative flex justify-center">
-          <div className="relative w-[75%] max-w-[430px] rotate-3 lg:w-full">
+        <div className="relative flex justify-center self-end">
+          <div className="relative w-[90%] lg:w-full">
             <img
-              src="/hero-image.jpeg"
+              src="/hero-image.png"
               alt="Esempio QR Code BloodyGlyph"
-              className="relative z-10 w-full drop-shadow-[0_25px_35px_rgba(0,0,0,0.8)]"
+              className="relative z-10 w-full"
             />
           </div>
         </div>
-
         {/* FLUSSO DESTINAZIONE */}
         <div className="mx-auto flex w-full max-w-xs flex-col items-center lg:mx-0">
           <div className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface)]/60 p-4 backdrop-blur-sm">
