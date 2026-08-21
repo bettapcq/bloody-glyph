@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
 import { FiFileText, FiCheckCircle, FiArrowDown } from "react-icons/fi";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
 
 const Hero = () => {
+  const isLogged = useSelector((state) => state.auth.isLogged);
+
   const fadeRight = {
     hidden: {
       opacity: 0,
@@ -122,12 +125,21 @@ const Hero = () => {
           </p>
 
           <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start">
-            <Link
-              to="/register"
-              className="bg-[var(--color-primary)] px-7 py-3.5 text-center font-semibold uppercase tracking-wide transition-colors hover:bg-[var(--color-primary-hover)]"
-            >
-              Crea il tuo QR →
-            </Link>
+            {isLogged ? (
+              <Link
+                to="/qrcodes/new"
+                className="bg-[var(--color-primary)] px-7 py-3.5 text-center font-semibold uppercase tracking-wide transition-colors hover:bg-[var(--color-primary-hover)]"
+              >
+                Crea il tuo QR →
+              </Link>
+            ) : (
+              <Link
+                to="/register"
+                className="bg-[var(--color-primary)] px-7 py-3.5 text-center font-semibold uppercase tracking-wide transition-colors hover:bg-[var(--color-primary-hover)]"
+              >
+                Crea il tuo QR →
+              </Link>
+            )}
 
             <a
               href="#how-it-works"

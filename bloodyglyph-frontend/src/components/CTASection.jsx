@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
 import { FiArrowRight } from "react-icons/fi";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
 
 const CTASection = () => {
+  const { isLogged } = useSelector((state) => state.auth);
+
   const thunderEffect = {
     hidden: {
       opacity: 0,
@@ -88,62 +91,120 @@ const CTASection = () => {
 
   return (
     <section className="overflow-hidden px-5 pt-5 pb-24 text-[var(--color-text)] md:px-8 lg:py-32">
-      <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-        <motion.img
-          src="/logo-puro.png"
-          alt="Glyph Logo"
-          className="w-[20%] pb-3"
-          variants={fadeIn({ delay: 0.1 })}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.3 }}
-        />
-        <motion.h2
-          className="font-[var(--font-title)] text-3xl font-bold uppercase leading-tight sm:text-4xl lg:text-5xl"
-          variants={fadeRight}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          Pronto a creare
-          <br />
-          il tuo primo Glyph?
-        </motion.h2>
-
-        <motion.p
-          className="mt-6 max-w-2xl text-sm leading-7 text-[var(--color-text-secondary)] sm:text-base"
-          variants={fadeLeft}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          Crea il tuo account, genera i tuoi QR dinamici e aggiorna le loro
-          destinazioni quando vuoi.
-        </motion.p>
-
-        <motion.div
-          className="mt-9 flex flex-col items-center gap-4 sm:flex-row"
-          variants={fadeIn({ delay: 0.2 })}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <Link
-            to="/register"
-            className="group flex items-center gap-2 rounded-sm bg-[var(--color-primary)] px-7 py-3 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]"
+      {isLogged ? (
+        <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
+          <motion.img
+            src="/logo-puro.png"
+            alt="Glyph Logo"
+            className="w-[20%] pb-3"
+            variants={fadeIn({ delay: 0.1 })}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+          />
+          <motion.h2
+            className="font-[var(--font-title)] text-3xl font-bold uppercase leading-tight sm:text-4xl lg:text-5xl"
+            variants={fadeRight}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
           >
-            Crea il tuo account
-            <FiArrowRight className="transition-transform group-hover:translate-x-1" />
-          </Link>
+            Il tuo prossimo Glyph
+            <br />
+            ti aspetta!
+          </motion.h2>
 
-          <Link
-            to="/login"
-            className="px-7 py-3 text-sm font-medium text-[var(--color-text-secondary)] transition hover:text-[var(--color-text)]"
+          <motion.p
+            className="mt-6 max-w-2xl text-sm leading-7 text-[var(--color-text-secondary)] sm:text-base"
+            variants={fadeLeft}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
           >
-            Hai già un account? Accedi
-          </Link>
-        </motion.div>
-      </div>
+            Crea un nuovo QR o aggiorna quelli che hai già.
+          </motion.p>
+
+          <motion.div
+            className="mt-9 flex flex-col items-center gap-4 sm:flex-row"
+            variants={fadeIn({ delay: 0.2 })}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            <Link
+              to="/qrcodes/new"
+              className="group flex items-center gap-2 rounded-sm bg-[var(--color-primary)] px-7 py-3 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]"
+            >
+              Crea un nuovo QR
+              <FiArrowRight className="transition-transform group-hover:translate-x-1" />
+            </Link>
+
+            <Link
+              to="/dashboard"
+              className="px-7 py-3 text-sm font-medium text-[var(--color-text-secondary)] transition hover:text-[var(--color-text)]"
+            >
+              Vai alla Dashboard
+            </Link>
+          </motion.div>
+        </div>
+      ) : (
+        <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
+          <motion.img
+            src="/logo-puro.png"
+            alt="Glyph Logo"
+            className="w-[20%] pb-3"
+            variants={fadeIn({ delay: 0.1 })}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+          />
+          <motion.h2
+            className="font-[var(--font-title)] text-3xl font-bold uppercase leading-tight sm:text-4xl lg:text-5xl"
+            variants={fadeRight}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            Pronto a creare
+            <br />
+            il tuo primo Glyph?
+          </motion.h2>
+
+          <motion.p
+            className="mt-6 max-w-2xl text-sm leading-7 text-[var(--color-text-secondary)] sm:text-base"
+            variants={fadeLeft}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            Crea il tuo account, genera i tuoi QR dinamici e aggiorna le loro
+            destinazioni quando vuoi.
+          </motion.p>
+
+          <motion.div
+            className="mt-9 flex flex-col items-center gap-4 sm:flex-row"
+            variants={fadeIn({ delay: 0.2 })}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            <Link
+              to="/register"
+              className="group flex items-center gap-2 rounded-sm bg-[var(--color-primary)] px-7 py-3 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]"
+            >
+              Crea il tuo account
+              <FiArrowRight className="transition-transform group-hover:translate-x-1" />
+            </Link>
+
+            <Link
+              to="/login"
+              className="px-7 py-3 text-sm font-medium text-[var(--color-text-secondary)] transition hover:text-[var(--color-text)]"
+            >
+              Hai già un account? Accedi
+            </Link>
+          </motion.div>
+        </div>
+      )}
     </section>
   );
 };
