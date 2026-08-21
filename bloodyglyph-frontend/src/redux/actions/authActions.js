@@ -6,6 +6,8 @@ export const REGISTER_ERROR = "REGISTER_ERROR";
 
 export const CLEAR_AUTH_ERROR = "CLEAR_AUTH_ERROR";
 
+export const LOGOUT = "LOGOUT";
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 // REGISTER
@@ -96,3 +98,11 @@ export const loginUser = (email, password) => async (dispatch) => {
 export const clearAuthError = () => ({
   type: CLEAR_AUTH_ERROR,
 });
+
+// LOGOUT
+export const logoutUser = () => {
+  localStorage.removeItem("token");
+  return {
+    type: LOGOUT,
+  };
+};

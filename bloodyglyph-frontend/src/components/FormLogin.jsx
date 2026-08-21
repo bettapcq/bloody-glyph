@@ -4,6 +4,7 @@ import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 import { clearAuthError, loginUser } from "../redux/actions/AuthActions";
 import { useDispatch, useSelector } from "react-redux";
 import { validationRules } from "../validationRules";
+import { getMe } from "../redux/actions/UserActions";
 
 const FormLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -36,6 +37,7 @@ const FormLogin = () => {
     const logged = await dispatch(loginUser(email, password));
 
     if (logged) {
+      await dispatch(getMe());
       navigate("/dashboard");
     }
   };

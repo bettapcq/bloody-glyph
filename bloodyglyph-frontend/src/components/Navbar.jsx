@@ -1,14 +1,24 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { FiMenu, FiUser, FiX } from "react-icons/fi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { GiRuneStone } from "react-icons/gi";
+import { logoutUser } from "../redux/actions/AuthActions";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { isLogged } = useSelector((state) => state.auth);
   const { currentUser } = useSelector((state) => state.users);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+
+    setUserMenuOpen(false);
+    setIsOpen(false);
+  };
 
   return (
     <nav className="navbar fixed top-0 left-0 z-50 w-full bg-[var(--color-bg)]/90 backdrop-blur-md">
@@ -77,6 +87,7 @@ const Navbar = () => {
 
                     <button
                       type="button"
+                      onClick={handleLogout}
                       className="w-full px-4 py-2 text-left text-sm text-[var(--color-primary)] transition hover:text-[var(--color-primary-hover)]"
                     >
                       Logout
@@ -161,6 +172,7 @@ const Navbar = () => {
                     <button
                       type="button"
                       className="w-fit text-sm text-[var(--color-primary)] transition hover:text-[var(--color-primary-hover)]"
+                      onClick={handleLogout}
                     >
                       Logout
                     </button>

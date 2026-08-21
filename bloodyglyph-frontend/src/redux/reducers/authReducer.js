@@ -4,6 +4,7 @@ import {
   REGISTER_SUCCESS,
   REGISTER_ERROR,
   CLEAR_AUTH_ERROR,
+  LOGOUT,
 } from "../actions/AuthActions";
 
 const initialState = {
@@ -59,6 +60,16 @@ function AuthReducer(state = initialState, action) {
       return {
         ...state,
         error: null,
+      };
+
+    case LOGOUT:
+      return {
+        ...state,
+        token: null,
+        isLogged: false,
+        userLogged: null,
+        error: null,
+        message: null,
       };
 
     default:
