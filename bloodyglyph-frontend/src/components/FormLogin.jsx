@@ -4,10 +4,12 @@ import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 
 const FormLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <section className="flex items-center justify-center overflow-hidden px-5 pb-20 pt-35 text-[var(--color-text)] md:px-8 lg:pt-50">
-      <div className="relative w-full lg:max-w-xl rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/80 px-7 pb-8 pt-12 shadow-2xl backdrop-blur-md sm:px-12">
+      <div className="relative w-full md:max-w-xl rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/80 px-7 pb-8 pt-12 shadow-2xl backdrop-blur-md sm:px-12">
         <div className="absolute left-1/2 top-0 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 rotate-45 items-center justify-center border border-[var(--color-primary)] bg-[var(--color-surface)] shadow-[0_0_30px_rgba(122,12,18,0.25)]">
           <img
             src="/logo-puro.png"
@@ -34,14 +36,17 @@ const FormLogin = () => {
               Email
             </label>
 
-            <div className="group relative">
+            <div className="relative">
               <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-primary)]" />
 
               <input
                 id="email"
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="la_tua_email@mail.com"
-                className="w-full rounded-sm border border-[var(--color-border)] bg-black/20 py-3.5 pl-12 pr-4 text-sm text-[var(--color-text)] outline-none transition placeholder:text-[var(--color-text-secondary)]/40 focus:border-[var(--color-primary)] focus:shadow-[0_0_20px_rgba(122,12,18,0.12)]"
+                required
+                className="w-full rounded-sm border border-[var(--color-border)] bg-black/20 py-3.5 pl-12 pr-4 text-sm text-[var(--color-text)] outline-none transition placeholder:text-[var(--color-text-secondary)]/40 focus:border-[var(--color-primary)]"
               />
             </div>
           </div>
@@ -60,7 +65,10 @@ const FormLogin = () => {
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="La tua password"
+                required
                 className="w-full rounded-sm border border-[var(--color-border)] bg-black/20 py-3.5 pl-12 pr-12 text-sm text-[var(--color-text)] outline-none transition placeholder:text-[var(--color-text-secondary)]/40 focus:border-[var(--color-primary)] focus:shadow-[0_0_20px_rgba(122,12,18,0.12)]"
               />
 

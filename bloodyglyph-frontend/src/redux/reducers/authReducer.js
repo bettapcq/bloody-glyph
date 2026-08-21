@@ -1,0 +1,68 @@
+import {
+  LOGIN_SUCCESS,
+  LOGIN_ERROR,
+  REGISTER_SUCCESS,
+  REGISTER_ERROR,
+  CLEAR_AUTH_ERROR,
+} from "../actions/AuthActions";
+
+const initialState = {
+  token: localStorage.getItem("token"),
+  userLogged: null,
+  isLogged: !!localStorage.getItem("token"),
+  error: null,
+  message: null,
+  loading: false,
+};
+
+function AuthReducer(state = initialState, action) {
+  switch (action.type) {
+    // LOGIN
+
+    case LOGIN_SUCCESS:
+      return {
+        ...state,
+        token: action.payload.token,
+        userLogged: action.payload.user,
+        isLogged: true,
+        error: null,
+        loading: false,
+      };
+
+    case LOGIN_ERROR:
+      return {
+        ...state,
+        error: action.payload,
+        loading: false,
+      };
+
+    // REGISTER
+
+    case REGISTER_SUCCESS:
+      return {
+        ...state,
+        userLogged: action.payload,
+        error: null,
+        loading: false,
+      };
+
+    case REGISTER_ERROR:
+      return {
+        ...state,
+        error: action.payload,
+        loading: false,
+      };
+
+    // CLEAR
+
+    case CLEAR_AUTH_ERROR:
+      return {
+        ...state,
+        error: null,
+      };
+
+    default:
+      return state;
+  }
+}
+export default AuthReducer;
