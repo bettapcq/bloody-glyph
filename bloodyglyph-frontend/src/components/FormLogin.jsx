@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 import { clearAuthError, loginUser } from "../redux/actions/AuthActions";
@@ -15,6 +15,12 @@ const FormLogin = () => {
   const navigate = useNavigate();
 
   const { error } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearAuthError());
+    };
+  }, [dispatch]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,7 +41,7 @@ const FormLogin = () => {
   };
 
   return (
-    <section className="flex items-center justify-center overflow-hidden px-5 pb-20 pt-50 text-[var(--color-text)] md:px-8 ">
+    <section className="flex items-center justify-center overflow-hidden px-5 pb-20 pt-35 text-[var(--color-text)] md:px-8 md:pt-50">
       <div className="relative w-full md:max-w-xl rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/80 px-7 pb-8 pt-12 shadow-2xl backdrop-blur-md sm:px-12">
         <div className="absolute left-1/2 top-0 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 rotate-45 items-center justify-center border border-[var(--color-primary)] bg-[var(--color-surface)] shadow-[0_0_30px_rgba(122,12,18,0.25)]">
           <img
