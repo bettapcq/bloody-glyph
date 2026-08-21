@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { FiMenu, FiX } from "react-icons/fi";
 
 const Navbar = () => {
@@ -8,13 +8,13 @@ const Navbar = () => {
   return (
     <nav className="navbar fixed top-0 left-0 z-50 w-full bg-[var(--color-bg)]/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:h-30 md:px-8">
-        <Link to="/" className="flex items-center">
+        <NavLink to="/" className="flex items-center">
           <img
             src="/logo-transparent.png"
             alt="BloodyGlyph"
             className="h-20 w-auto md:h-30 px-3"
           />
-        </Link>
+        </NavLink>
 
         <button
           type="button"
@@ -26,55 +26,63 @@ const Navbar = () => {
         </button>
 
         <div className="hidden items-center gap-8 md:flex">
-          <Link
+          <NavLink
             to="/"
-            className="text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)]"
+            className={({ isActive }) =>
+              isActive
+                ? "text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)] items-center border-b-2 border-[var(--color-primary)] pb-1"
+                : "text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)] items-center pb-1"
+            }
           >
             Home
-          </Link>
+          </NavLink>
 
-          <Link
+          <NavLink
             to="/login"
-            className="text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)]"
+            className={({ isActive }) =>
+              isActive
+                ? "text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)] items-center border-b-2 border-[var(--color-primary)] pb-1"
+                : "text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)] items-center pb-1"
+            }
           >
             Login
-          </Link>
+          </NavLink>
 
-          <Link
+          <NavLink
             to="/register"
             className="rounded-md bg-[var(--color-primary)] px-5 py-2.5 text-sm font-semibold text-[var(--color-text)] transition-colors hover:bg-[var(--color-primary-hover)]"
           >
             Registrati
-          </Link>
+          </NavLink>
         </div>
       </div>
 
       {isOpen && (
         <div className="border-t border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-5 md:hidden">
           <div className="flex flex-col gap-5">
-            <Link
+            <NavLink
               to="/"
               onClick={() => setIsOpen(false)}
               className="text-[var(--color-text-secondary)]"
             >
               Home
-            </Link>
+            </NavLink>
 
-            <Link
+            <NavLink
               to="/login"
               onClick={() => setIsOpen(false)}
               className="text-[var(--color-text-secondary)]"
             >
               Login
-            </Link>
+            </NavLink>
 
-            <Link
+            <NavLink
               to="/register"
               onClick={() => setIsOpen(false)}
               className="rounded-md bg-[var(--color-primary)] px-4 py-3 text-center font-semibold text-[var(--color-text)]"
             >
               Registrati
-            </Link>
+            </NavLink>
           </div>
         </div>
       )}
