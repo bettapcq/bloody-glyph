@@ -1,14 +1,41 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
+import { clearAuthError, loginUser } from "../redux/actions/AuthActions";
+import { useDispatch, useSelector } from "react-redux";
+import { validationRules } from "../validationRules";
 
 const FormLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [validated, setValidated] = useState(false);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { error } = useSelector((state) => state.auth);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    dispatch(clearAuthError());
+
+    const form = e.currentTarget;
+
+    if (!form.checkValidity()) {
+      setValidated(true);
+      return;
+    }
+
+    const logged = await dispatch(loginUser(email, password));
+
+    if (logged) {
+      navigate("/dashboard");
+    }
+  };
 
   return (
-    <section className="flex items-center justify-center overflow-hidden px-5 pb-20 pt-35 text-[var(--color-text)] md:px-8 lg:pt-50">
+    <section className="flex items-center justify-center overflow-hidden px-5 pb-20 pt-50 text-[var(--color-text)] md:px-8 ">
       <div className="relative w-full md:max-w-xl rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/80 px-7 pb-8 pt-12 shadow-2xl backdrop-blur-md sm:px-12">
         <div className="absolute left-1/2 top-0 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 rotate-45 items-center justify-center border border-[var(--color-primary)] bg-[var(--color-surface)] shadow-[0_0_30px_rgba(122,12,18,0.25)]">
           <img
@@ -27,7 +54,7 @@ const FormLogin = () => {
         </div>
 
         {/* FORM */}
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit} noValidate>
           <div>
             <label
               htmlFor="email"
@@ -45,10 +72,17 @@ const FormLogin = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="la_tua_email@mail.com"
-                required
+                required={validationRules.email.required}
+                pattern={validationRules.email.pattern}
                 className="w-full rounded-sm border border-[var(--color-border)] bg-black/20 py-3.5 pl-12 pr-4 text-sm text-[var(--color-text)] outline-none transition placeholder:text-[var(--color-text-secondary)]/40 focus:border-[var(--color-primary)]"
               />
             </div>
+            {validated &&
+              !new RegExp(validationRules.email.pattern).test(email) && (
+                <p className="mt-1 whitespace-pre-line text-xs text-[var(--color-primary-hover)]">
+                  {validationRules.email.message}
+                </p>
+              )}
           </div>
 
           <div>
@@ -83,6 +117,11 @@ const FormLogin = () => {
                 {showPassword ? <FiEyeOff /> : <FiEye />}
               </button>
             </div>
+            {error && (
+              <p className="text-center text-sm text-[var(--color-primary-hover)] pt-5">
+                {error}
+              </p>
+            )}
 
             <div className="mt-3 text-center lg:text-right">
               <Link
