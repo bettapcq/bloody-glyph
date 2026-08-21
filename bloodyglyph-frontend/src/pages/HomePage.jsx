@@ -1,3 +1,5 @@
+import CTASection from "../components/CTASection.jsx";
+import CtaSection from "../components/CTASection.jsx";
 import Footer from "../components/Footer.jsx";
 import Hero from "../components/Hero";
 import HowItWorksSection from "../components/HowItWorksSection.jsx";
@@ -10,6 +12,7 @@ function HomePage() {
         <Navbar />
         <Hero />
         <HowItWorksSection />
+        <CTASection />
         <Footer />
       </main>
     </>
