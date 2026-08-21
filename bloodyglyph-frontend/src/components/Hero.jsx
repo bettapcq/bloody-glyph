@@ -37,6 +37,38 @@ const Hero = () => {
     },
   };
 
+  const thunderEffect = {
+    hidden: {
+      opacity: 0,
+      scale: 1.35,
+      y: -40,
+      filter: "blur(8px)",
+    },
+
+    show: {
+      opacity: 1,
+      scale: [1.35, 0.96, 1.03, 1],
+      y: [-40, 4, -2, 0],
+      x: [0, -10, 9, -7, 5, -3, 2, 0],
+      rotate: [0, -1.2, 1, -0.8, 0.5, 0],
+      filter: "blur(0px)",
+
+      transition: {
+        duration: 0.85,
+        ease: "easeOut",
+
+        x: {
+          duration: 0.45,
+          delay: 0.25,
+        },
+
+        rotate: {
+          duration: 0.45,
+          delay: 0.25,
+        },
+      },
+    },
+  };
   // animazione freccia flusso destinazione
   const FlowArrow = ({ delay = 0 }) => {
     return (
@@ -109,32 +141,8 @@ const Hero = () => {
         <div className="relative flex justify-center self-end">
           <motion.div
             className="relative w-[90%] lg:w-full"
-            initial={{
-              opacity: 0,
-              scale: 1.35,
-              y: -40,
-              filter: "blur(8px)",
-            }}
-            animate={{
-              opacity: 1,
-              scale: [1.35, 0.96, 1.03, 1],
-              y: [-40, 4, -2, 0],
-              x: [0, -10, 9, -7, 5, -3, 2, 0],
-              rotate: [0, -1.2, 1, -0.8, 0.5, 0],
-              filter: "blur(0px)",
-            }}
-            transition={{
-              duration: 0.85,
-              ease: "easeOut",
-              x: {
-                duration: 0.45,
-                delay: 0.25,
-              },
-              rotate: {
-                duration: 0.45,
-                delay: 0.25,
-              },
-            }}
+            initial={thunderEffect.hidden}
+            animate={thunderEffect.show}
           >
             <img
               src="/hero-image.png"
