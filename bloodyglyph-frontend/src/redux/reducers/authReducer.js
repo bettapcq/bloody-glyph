@@ -5,7 +5,9 @@ import {
   REGISTER_ERROR,
   CLEAR_AUTH_ERROR,
   LOGOUT,
-} from "../actions/AuthActions";
+  RESET_PASSWORD_SUCCESS,
+  RESET_PASSWORD_ERROR,
+} from "../actions/authActions";
 
 const initialState = {
   token: localStorage.getItem("token"),
@@ -62,6 +64,8 @@ function AuthReducer(state = initialState, action) {
         error: null,
       };
 
+    // LOGOUT
+
     case LOGOUT:
       return {
         ...state,
@@ -70,6 +74,20 @@ function AuthReducer(state = initialState, action) {
         userLogged: null,
         error: null,
         message: null,
+      };
+
+    // RESET PASSWORD
+
+    case RESET_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        error: null,
+      };
+
+    case RESET_PASSWORD_ERROR:
+      return {
+        ...state,
+        error: action.payload,
       };
 
     default:

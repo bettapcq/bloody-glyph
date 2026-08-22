@@ -1,12 +1,11 @@
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_ERROR = "LOGIN_ERROR";
-
 export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const REGISTER_ERROR = "REGISTER_ERROR";
-
 export const CLEAR_AUTH_ERROR = "CLEAR_AUTH_ERROR";
-
 export const LOGOUT = "LOGOUT";
+export const RESET_PASSWORD_SUCCESS = "RESET_PASSWORD_SUCCESS";
+export const RESET_PASSWORD_ERROR = "RESET_PASSWORD_ERROR";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -105,4 +104,41 @@ export const logoutUser = () => {
   return {
     type: LOGOUT,
   };
+};
+
+// RESET PASSWORD
+export const resetPassword = (email) => async (dispatch) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/auth/reset-password?email=${encodeURIComponent(email)}`,
+      {
+        method: "POST",
+      },
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      dispatch({
+        type: RESET_PASSWORD_ERROR,
+        payload: data.message || "Errore durante il reset della password",
+      });
+
+      return false;
+    }
+
+    dispatch({
+      type: RESET_PASSWORD_SUCCESS,
+      payload: data.message,
+    });
+
+    return true;
+  } catch {
+    dispatch({
+      type: RESET_PASSWORD_ERROR,
+      payload: "Errore di connessione al server",
+    });
+
+    return false;
+  }
 };
