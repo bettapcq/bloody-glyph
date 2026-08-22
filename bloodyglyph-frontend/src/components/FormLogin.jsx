@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
-import { clearAuthError, loginUser } from "../redux/actions/AuthActions";
+import { clearAuthError, loginUser } from "../redux/actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
 import { validationRules } from "../validationRules";
 import { getMe } from "../redux/actions/UserActions";
+import ResetPasswordModal from "./ResetPasswordModal";
 
 const FormLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [validated, setValidated] = useState(false);
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -132,12 +134,13 @@ const FormLogin = () => {
             )}
 
             <div className="mt-3 text-center lg:text-right">
-              <Link
-                to="/forgot-password"
+              <button
+                type="button"
+                onClick={() => setIsResetModalOpen(true)}
                 className="text-xs text-[var(--color-primary)] transition hover:text-[var(--color-primary-hover)]"
               >
                 Password dimenticata?
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -168,6 +171,10 @@ const FormLogin = () => {
           </Link>
         </p>
       </div>
+      <ResetPasswordModal
+        isOpen={isResetModalOpen}
+        onClose={() => setIsResetModalOpen(false)}
+      />
     </section>
   );
 };
