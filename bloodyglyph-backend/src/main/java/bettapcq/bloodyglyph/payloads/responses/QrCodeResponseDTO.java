@@ -1,5 +1,7 @@
 package bettapcq.bloodyglyph.payloads.responses;
 
+import bettapcq.bloodyglyph.entities.QrContentType;
+
 import java.time.LocalDateTime;
 
 public record QrCodeResponseDTO(
@@ -8,7 +10,9 @@ public record QrCodeResponseDTO(
         String content,
         String qrImageUrl,
         LocalDateTime createdAt,
+        QrContentType contentType,
         Long userId,
-        Long categoryId
+        Long categoryId,
+        String categoryName
 ) {
 }

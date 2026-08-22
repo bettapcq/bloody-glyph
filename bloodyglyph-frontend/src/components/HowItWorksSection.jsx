@@ -115,7 +115,7 @@ function HowItWorksSection() {
     <>
       <section
         id="how-it-works"
-        className="border-t border-[var(--color-border-light)] overflow-hidden px-5 pb-16 pt-15 text-[var(--color-text)] md:px-8"
+        className="border-t border-[var(--color-border)] overflow-hidden px-5 pb-16 pt-15 text-[var(--color-text)] md:px-8"
       >
         <motion.h1
           className="mx-auto mb-10 max-w-7xl text-center text-3xl font-bold uppercase leading-[1.08] sm:text-4xl lg:text-5xl"

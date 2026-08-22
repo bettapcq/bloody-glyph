@@ -4,7 +4,7 @@ import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 import { clearAuthError, loginUser } from "../redux/actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
 import { validationRules } from "../validationRules";
-import { getMe } from "../redux/actions/UserActions";
+import { getMe } from "../redux/actions/userActions";
 import ResetPasswordModal from "./ResetPasswordModal";
 
 const FormLogin = () => {

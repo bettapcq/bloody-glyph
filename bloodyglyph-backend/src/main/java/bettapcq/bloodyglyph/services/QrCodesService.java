@@ -53,10 +53,12 @@ public class QrCodesService {
                 qrCode.getContent(),
                 qrCode.getQrImageUrl(),
                 qrCode.getCreatedAt(),
+                qrCode.getContentType(),
                 qrCode.getUser().getUserId(),
                 qrCode.getCategory() == null
                         ? null
-                        : qrCode.getCategory().getCategoryId()
+                        : qrCode.getCategory().getCategoryId(),
+                qrCode.getCategory() == null ? null : qrCode.getCategory().getName()
         );
     }
 

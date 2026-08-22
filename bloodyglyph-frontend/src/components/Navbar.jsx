@@ -2,8 +2,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { FiMenu, FiUser, FiX } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
-import { GiRuneStone } from "react-icons/gi";
-import { logoutUser } from "../redux/actions/AuthActions";
+import { logoutUser } from "../redux/actions/authActions";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);

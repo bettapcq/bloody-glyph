@@ -6,7 +6,7 @@ import {
   registerUser,
   loginUser,
   clearAuthError,
-} from "../redux/actions/AuthActions";
+} from "../redux/actions/authActions";
 import { validationRules } from "../validationRules";
 
 const FormRegister = () => {

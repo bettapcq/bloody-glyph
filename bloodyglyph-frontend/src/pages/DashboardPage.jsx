@@ -1,3 +1,4 @@
+import DashboardSection from "../components/DashboardSection";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 
@@ -11,4 +12,4 @@ function DashboardPage() {
   );
 }
 
-export const DashboardPage;
+export default DashboardPage;

@@ -1,4 +1,4 @@
-import { GET_ME_SUCCESS, GET_ME_ERROR } from "../actions/UserActions";
+import { GET_ME_SUCCESS, GET_ME_ERROR } from "../actions/userActions";
 import { LOGOUT } from "../actions/authActions";
 
 const initialState = {
