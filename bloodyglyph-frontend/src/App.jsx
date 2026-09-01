@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getMe } from "./redux/actions/userActions";
 import DashboardPage from "./pages/DashboardPage";
+import NewQrCodePage from "./pages/NewQrCodePage";
 
 function App() {
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/qrcodes/new" element={<NewQrCodePage />} />
       </Routes>
     </BrowserRouter>
   );

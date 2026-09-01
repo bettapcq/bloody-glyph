@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FiMenu, FiUser, FiX } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../redux/actions/authActions";
@@ -11,12 +11,13 @@ const Navbar = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     dispatch(logoutUser());
-
     setUserMenuOpen(false);
     setIsOpen(false);
+    navigate("/");
   };
 
   return (
