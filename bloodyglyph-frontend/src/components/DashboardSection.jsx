@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getMyQrCodes } from "../redux/actions/qrActions";
 import { getMyCategories } from "../redux/actions/categoryActions";
+import { Link } from "react-router-dom";
 
 function DashboardSection() {
   const { currentUser } = useSelector((state) => state.users);
@@ -45,10 +46,13 @@ function DashboardSection() {
               code.
             </p>
 
-            <button className="mt-7 flex items-center gap-2 rounded-sm bg-[var(--color-primary)] px-6 py-3 text-sm font-semibold uppercase tracking-[0.15em] transition hover:bg-[var(--color-primary-hover)]">
+            <Link
+              to="/qrcodes/new"
+              className="mt-7 inline-flex items-center gap-2 rounded-sm bg-[var(--color-primary)] px-6 py-3 text-sm font-semibold uppercase tracking-[0.15em] transition hover:bg-[var(--color-primary-hover)]"
+            >
               <FiPlus />
               Crea QR code
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -95,10 +99,13 @@ function DashboardSection() {
               </p>
             </div>
 
-            <button className="flex items-center justify-center gap-2 rounded-sm bg-[var(--color-primary)] px-5 py-3 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]">
+            <Link
+              to="/qrcodes/new"
+              className="flex items-center justify-center gap-2 rounded-sm bg-[var(--color-primary)] px-5 py-3 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]"
+            >
               <FiPlus />
               Crea QR code
-            </button>
+            </Link>
           </div>
 
           {/* FILTRI DA IMPLEMENTARE IN BACKEND
@@ -138,7 +145,10 @@ function DashboardSection() {
               ))}
 
               {/* CREATE CARD */}
-              <button className="flex min-h-72 flex-col items-center justify-center rounded-sm border border-dashed border-[var(--color-border)] bg-black/10 text-[var(--color-text-secondary)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-text)]">
+              <Link
+                to="/qrcodes/new"
+                className="flex min-h-72 flex-col items-center justify-center rounded-sm border border-dashed border-[var(--color-border)] bg-black/10 text-[var(--color-text-secondary)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-text)]"
+              >
                 <FiPlus size={30} />
 
                 <span className="mt-4 text-sm">
@@ -146,7 +156,7 @@ function DashboardSection() {
                   <br />
                   QR code
                 </span>
-              </button>
+              </Link>
             </div>
           )}
         </div>
