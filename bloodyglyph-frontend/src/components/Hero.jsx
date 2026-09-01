@@ -2,10 +2,30 @@ import { Link } from "react-router-dom";
 import { FiFileText, FiCheckCircle, FiArrowDown } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
+import { useState } from "react";
+import AlertModal from "./AlertModal";
 
 const Hero = () => {
   const isLogged = useSelector((state) => state.auth.isLogged);
+  const { qrCodes } = useSelector((state) => state.qrCodes);
 
+  const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
+
+  const handleCreateQrCode = () => {
+    if (!isLogged) {
+      navigate("/register");
+      return;
+    }
+
+    if (qrCodes.length >= 3) {
+      setIsLimitModalOpen(true);
+      return;
+    }
+
+    navigate("/qrcodes/new");
+  };
+
+  // AMINAZIONI
   const fadeRight = {
     hidden: {
       opacity: 0,
@@ -125,21 +145,12 @@ const Hero = () => {
           </p>
 
           <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start">
-            {isLogged ? (
-              <Link
-                to="/qrcodes/new"
-                className="bg-[var(--color-primary)] px-7 py-3.5 text-center font-semibold uppercase tracking-wide transition-colors hover:bg-[var(--color-primary-hover)]"
-              >
-                Crea il tuo QR →
-              </Link>
-            ) : (
-              <Link
-                to="/register"
-                className="bg-[var(--color-primary)] px-7 py-3.5 text-center font-semibold uppercase tracking-wide transition-colors hover:bg-[var(--color-primary-hover)]"
-              >
-                Crea il tuo QR →
-              </Link>
-            )}
+            <button
+              onClick={handleCreateQrCode}
+              className="bg-[var(--color-primary)] px-7 py-3.5 text-center font-semibold uppercase tracking-wide transition-colors hover:bg-[var(--color-primary-hover)]"
+            >
+              Crea il tuo QR →
+            </button>
 
             <a
               href="#how-it-works"
@@ -218,6 +229,12 @@ const Hero = () => {
           </div>
         </motion.div>
       </div>
+      <AlertModal
+        isOpen={isLimitModalOpen}
+        onClose={() => setIsLimitModalOpen(false)}
+        title="Limite raggiunto"
+        message="Hai raggiunto il limite massimo di 3 QR code contemporanei. Elimina prima un QR code per poterne creare uno nuovo."
+      />
     </section>
   );
 };

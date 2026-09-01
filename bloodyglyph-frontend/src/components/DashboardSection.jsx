@@ -1,10 +1,11 @@
 import { FiPlus, FiSearch } from "react-icons/fi";
 import QrCard from "./QrCard";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getMyQrCodes } from "../redux/actions/qrActions";
 import { getMyCategories } from "../redux/actions/categoryActions";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import AlertModal from "./AlertModal";
 
 function DashboardSection() {
   const { currentUser } = useSelector((state) => state.users);
@@ -18,6 +19,19 @@ function DashboardSection() {
     dispatch(getMyQrCodes());
     dispatch(getMyCategories());
   }, [dispatch]);
+
+  const navigate = useNavigate();
+
+  const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
+
+  const handleCreateQrCode = () => {
+    if (qrCodes.length >= 3) {
+      setIsLimitModalOpen(true);
+      return;
+    }
+
+    navigate("/qrcodes/new");
+  };
 
   return (
     <section className="px-5 pb-20 pt-15 text-[var(--color-text)] md:px-8 lg:pt-36">
@@ -46,13 +60,13 @@ function DashboardSection() {
               code.
             </p>
 
-            <Link
-              to="/qrcodes/new"
+            <button
+              onClick={handleCreateQrCode}
               className="mt-7 inline-flex items-center gap-2 rounded-sm bg-[var(--color-primary)] px-6 py-3 text-sm font-semibold uppercase tracking-[0.15em] transition hover:bg-[var(--color-primary-hover)]"
             >
               <FiPlus />
               Crea QR code
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -99,13 +113,13 @@ function DashboardSection() {
               </p>
             </div>
 
-            <Link
-              to="/qrcodes/new"
+            <button
+              onClick={handleCreateQrCode}
               className="flex items-center justify-center gap-2 rounded-sm bg-[var(--color-primary)] px-5 py-3 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]"
             >
               <FiPlus />
               Crea QR code
-            </Link>
+            </button>
           </div>
 
           {/* FILTRI DA IMPLEMENTARE IN BACKEND
@@ -145,8 +159,8 @@ function DashboardSection() {
               ))}
 
               {/* CREATE CARD */}
-              <Link
-                to="/qrcodes/new"
+              <button
+                onClick={handleCreateQrCode}
                 className="flex min-h-72 flex-col items-center justify-center rounded-sm border border-dashed border-[var(--color-border)] bg-black/10 text-[var(--color-text-secondary)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-text)]"
               >
                 <FiPlus size={30} />
@@ -156,11 +170,17 @@ function DashboardSection() {
                   <br />
                   QR code
                 </span>
-              </Link>
+              </button>
             </div>
           )}
         </div>
       </div>
+      <AlertModal
+        isOpen={isLimitModalOpen}
+        onClose={() => setIsLimitModalOpen(false)}
+        title="Limite raggiunto"
+        message="Hai raggiunto il limite massimo di 3 QR code contemporanei. Elimina prima un QR code per poterne creare uno nuovo."
+      />
     </section>
   );
 }

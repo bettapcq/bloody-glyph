@@ -1,42 +1,38 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FiArrowRight } from "react-icons/fi";
 import { motion } from "framer-motion";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import AlertModal from "./AlertModal";
+import { getMyQrCodes } from "../redux/actions/qrActions";
 
 const CTASection = () => {
   const { isLogged } = useSelector((state) => state.auth);
+  const { qrCodes } = useSelector((state) => state.qrCodes);
 
-  const thunderEffect = {
-    hidden: {
-      opacity: 0,
-      scale: 1.35,
-      y: -40,
-      filter: "blur(8px)",
-    },
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    show: {
-      opacity: 1,
-      scale: [1.35, 0.96, 1.03, 1],
-      y: [-40, 4, -2, 0],
-      x: [0, -10, 9, -7, 5, -3, 2, 0],
-      rotate: [0, -1.2, 1, -0.8, 0.5, 0],
-      filter: "blur(0px)",
+  const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
 
-      transition: {
-        duration: 0.85,
-        ease: "easeOut",
+  useEffect(() => {
+    if (isLogged) {
+      dispatch(getMyQrCodes());
+    }
+  }, [dispatch, isLogged]);
 
-        x: {
-          duration: 0.45,
-          delay: 0.25,
-        },
+  const handleCreateQrCode = () => {
+    if (!isLogged) {
+      navigate("/register");
+      return;
+    }
 
-        rotate: {
-          duration: 0.45,
-          delay: 0.25,
-        },
-      },
-    },
+    if (qrCodes.length >= 3) {
+      setIsLimitModalOpen(true);
+      return;
+    }
+
+    navigate("/qrcodes/new");
   };
 
   const fadeIn = ({ delay = 0 }) => ({
@@ -131,13 +127,13 @@ const CTASection = () => {
             whileInView="show"
             viewport={{ once: true, amount: 0.3 }}
           >
-            <Link
-              to="/qrcodes/new"
+            <button
+              onClick={handleCreateQrCode}
               className="group flex items-center gap-2 rounded-sm bg-[var(--color-primary)] px-7 py-3 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]"
             >
               Crea un nuovo QR
               <FiArrowRight className="transition-transform group-hover:translate-x-1" />
-            </Link>
+            </button>
 
             <Link
               to="/dashboard"
@@ -205,6 +201,12 @@ const CTASection = () => {
           </motion.div>
         </div>
       )}
+      <AlertModal
+        isOpen={isLimitModalOpen}
+        onClose={() => setIsLimitModalOpen(false)}
+        title="Limite raggiunto"
+        message="Hai raggiunto il limite massimo di 3 QR code contemporanei. Elimina prima un QR code per poterne creare uno nuovo."
+      />
     </section>
   );
 };
