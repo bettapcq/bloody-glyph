@@ -9,11 +9,18 @@ import {
 } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { getMyCategories } from "../redux/actions/categoryActions";
+import {
+  createQrCodeFromUrl,
+  createQrCodeFromFile,
+} from "../redux/actions/qrActions";
+import { useNavigate } from "react-router-dom";
 
 function QrCodeForm() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { categories } = useSelector((state) => state.categories);
+  const { loading, error } = useSelector((state) => state.qrCodes);
 
   const [contentType, setContentType] = useState("URL");
   const [title, setTitle] = useState("");
@@ -31,16 +38,34 @@ function QrCodeForm() {
     setFile(null);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log({
-      contentType,
-      title,
-      content,
-      file,
-      categoryId,
-    });
+    try {
+      if (contentType === "URL") {
+        const payload = {
+          title,
+          content,
+          contentType,
+          categoryId: categoryId ? Number(categoryId) : null,
+        };
+
+        await dispatch(createQrCodeFromUrl(payload));
+      } else {
+        const payload = {
+          title,
+          contentType,
+          categoryId: categoryId ? Number(categoryId) : null,
+          file,
+        };
+
+        await dispatch(createQrCodeFromFile(payload));
+      }
+
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -117,6 +142,7 @@ function QrCodeForm() {
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Es. Portfolio personale"
               className="mt-2 w-full rounded-sm border border-[var(--color-border)] bg-black/20 px-4 py-3 text-sm outline-none transition placeholder:text-[var(--color-text-secondary)]/50 focus:border-[var(--color-primary)]"
+              required
             />
           </div>
 
@@ -136,6 +162,7 @@ function QrCodeForm() {
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="https://example.com"
                 className="mt-2 w-full rounded-sm border border-[var(--color-border)] bg-black/20 px-4 py-3 text-sm outline-none transition placeholder:text-[var(--color-text-secondary)]/50 focus:border-[var(--color-primary)]"
+                required
               />
             </div>
           )}
@@ -164,6 +191,7 @@ function QrCodeForm() {
                   }
                   onChange={(e) => setFile(e.target.files[0])}
                   className="hidden"
+                  required
                 />
               </label>
             </div>
@@ -192,7 +220,9 @@ function QrCodeForm() {
               ))}
             </select>
           </div>
-
+          {error && (
+            <p className="mt-6 text-sm text-[var(--color-primary)]">{error}</p>
+          )}
           <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <Link
               to="/dashboard"
@@ -205,7 +235,7 @@ function QrCodeForm() {
               type="submit"
               className="rounded-sm bg-[var(--color-primary)] px-6 py-3 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]"
             >
-              Crea QR code
+              {loading ? "Creazione..." : "Crea QR code"}
             </button>
           </div>
         </form>

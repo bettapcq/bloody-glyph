@@ -2,6 +2,9 @@ import {
   GET_QR_ERROR,
   GET_QR_LOADING,
   GET_QR_SUCCESS,
+  CREATE_QR_LOADING,
+  CREATE_QR_SUCCESS,
+  CREATE_QR_ERROR,
 } from "../actions/qrActions";
 
 const initialState = {
@@ -28,6 +31,28 @@ const qrReducer = (state = initialState, action) => {
       };
 
     case GET_QR_ERROR:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    case CREATE_QR_LOADING:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case CREATE_QR_SUCCESS:
+      return {
+        ...state,
+        qrCodes: [...state.qrCodes, action.payload],
+        loading: false,
+        error: null,
+      };
+
+    case CREATE_QR_ERROR:
       return {
         ...state,
         loading: false,
