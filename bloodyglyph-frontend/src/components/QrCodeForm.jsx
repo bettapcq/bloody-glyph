@@ -233,6 +233,7 @@ function QrCodeForm() {
 
             <button
               type="submit"
+              disabled={loading} // disabilita il bottone mentre loading è true
               className="rounded-sm bg-[var(--color-primary)] px-6 py-3 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]"
             >
               {loading ? "Creazione..." : "Crea QR code"}

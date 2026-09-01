@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FiFileText, FiCheckCircle, FiArrowDown } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import AlertModal from "./AlertModal";
 const Hero = () => {
   const isLogged = useSelector((state) => state.auth.isLogged);
   const { qrCodes } = useSelector((state) => state.qrCodes);
+  const navigate = useNavigate();
 
   const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
 
