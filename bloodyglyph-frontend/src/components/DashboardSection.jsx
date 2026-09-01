@@ -1,46 +1,29 @@
 import { FiPlus, FiSearch } from "react-icons/fi";
 import QrCard from "./QrCard";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getMyQrCodes } from "../redux/actions/qrActions";
+import { getMyCategories } from "../redux/actions/categoryActions";
 
 function DashboardSection() {
   const { currentUser } = useSelector((state) => state.users);
 
-  const qrCodes = [
-    {
-      qrId: 1,
-      title: "Esempio 1",
-      contentType: "URL",
-      qrImageUrl: "/qr-placeholder.png",
-      createdAt: "2025-11-03T13:09:10",
-      categoryId: null,
-      categoryName: null,
-    },
-    {
-      qrId: 2,
-      title: "esempio 2",
-      contentType: "PDF",
-      qrImageUrl: "/qr-placeholder.png",
-      createdAt: "2026-08-22T02:14:32",
-      categoryId: 3,
-      categoryName: "Social",
-    },
-    {
-      qrId: 3,
-      title: "esempio 3",
-      contentType: "IMAGE",
-      qrImageUrl: "/qr-placeholder.png",
-      createdAt: "2025-02-15T08:15:50",
-      categoryId: 3,
-      categoryName: "Social",
-    },
-  ];
+  const dispatch = useDispatch();
+
+  const { qrCodes, loading, error } = useSelector((state) => state.qrCodes);
+  const { categories } = useSelector((state) => state.categories);
+
+  useEffect(() => {
+    dispatch(getMyQrCodes());
+    dispatch(getMyCategories());
+  }, [dispatch]);
 
   return (
     <section className="px-5 pb-20 pt-15 text-[var(--color-text)] md:px-8 lg:pt-36">
       <div className="mx-auto max-w-7xl">
         {/* HERO */}
         <div
-          className="overflow-hidden rounded-sm bg-[length:100%] bg-no-repeat bg-bottom md:bg-cover md:bg-center"
+          className="overflow-hidden rounded-sm bg-cover bg-[center_70%] md:bg-center"
           style={{
             backgroundImage: "url('/portal-bg.png')",
           }}
@@ -53,7 +36,7 @@ function DashboardSection() {
             <h1 className="mt-3 font-[var(--font-title)] text-3xl font-bold md:text-5xl">
               Bentornatə,{" "}
               <span className="text-[var(--color-primary)]">
-                {currentUser.username}
+                {currentUser?.username}
               </span>
             </h1>
 
@@ -76,13 +59,17 @@ function DashboardSection() {
               QR code creati
             </p>
 
-            <p className="mt-2 font-[var(--font-title)] text-3xl">2 / 3</p>
+            <p className="mt-2 font-[var(--font-title)] text-3xl">
+              {qrCodes ? qrCodes.length : 0} / 3
+            </p>
           </div>
           <div className="w-50 rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/80 p-5">
             <p className="text-sm text-[var(--color-text-secondary)]">
               Categorie
             </p>
-            <p className="mt-2 font-[var(--font-title)] text-3xl">1</p>
+            <p className="mt-2 font-[var(--font-title)] text-3xl">
+              {categories ? categories.length : 0}
+            </p>
           </div>
         </div>
         {/* PIANO FREE/A PAGAMENTO DA VALUTARE IMPLEMENTAZIONE
@@ -134,24 +121,34 @@ function DashboardSection() {
               <option>Più recenti</option>
             </select>
           </div> */}
+          {loading && (
+            <p className="mt-6 text-sm text-[var(--color-text-secondary)]">
+              Caricamento QR code...
+            </p>
+          )}
 
+          {error && (
+            <p className="mt-6 text-sm text-[var(--color-primary)]">{error}</p>
+          )}
           {/* CARDS */}
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {qrCodes.map((qr) => (
-              <QrCard key={qr.qrId} qr={qr} />
-            ))}
+          {!loading && !error && (
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {qrCodes?.map((qr) => (
+                <QrCard key={qr.qrId} qr={qr} />
+              ))}
 
-            {/* CREATE CARD */}
-            <button className="flex min-h-72 flex-col items-center justify-center rounded-sm border border-dashed border-[var(--color-border)] bg-black/10 text-[var(--color-text-secondary)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-text)]">
-              <FiPlus size={30} />
+              {/* CREATE CARD */}
+              <button className="flex min-h-72 flex-col items-center justify-center rounded-sm border border-dashed border-[var(--color-border)] bg-black/10 text-[var(--color-text-secondary)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-text)]">
+                <FiPlus size={30} />
 
-              <span className="mt-4 text-sm">
-                Crea nuovo
-                <br />
-                QR code
-              </span>
-            </button>
-          </div>
+                <span className="mt-4 text-sm">
+                  Crea nuovo
+                  <br />
+                  QR code
+                </span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </section>
