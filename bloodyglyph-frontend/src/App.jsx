@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { getMe } from "./redux/actions/userActions";
 import DashboardPage from "./pages/DashboardPage";
 import NewQrCodePage from "./pages/NewQrCodePage";
+import QrCodeDetailsPage from "./pages/QrCodeDetailsPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/qrcodes/new" element={<NewQrCodePage />} />
+        <Route path="/qrcodes/details" element={<QrCodeDetailsPage />} />
       </Routes>
     </BrowserRouter>
   );
