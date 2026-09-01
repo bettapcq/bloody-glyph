@@ -14,6 +14,24 @@ function QrCodeDetailsPage() {
     createdAt: "2026-09-01T18:30:00",
   };
 
+  //   funzione per scaricare il qr code come immagine
+  const handleDownloadQr = async () => {
+    const response = await fetch(qrCode.qrImageUrl);
+    const blob = await response.blob(); //Un Blob (Binary Large Object) rappresenta dati binari, come immagini, PDF, video ecc.
+
+    const url = URL.createObjectURL(blob); // Url temporanea che punta a quel blob
+
+    const link = document.createElement("a"); // crea un <a> fittizio,
+    link.href = url; //aggiunge al link l'href con l'url creato, concettualmente una cosa tipo : <a href="blob:http://url-temporanea/..."></a>
+    link.download = `${qrCode.title}.png`; // imposta il nome del file da scaricare (prendendo il titolo del qr code e aggiungendo l'estensione .png)
+
+    document.body.appendChild(link); //aggiunge il link al body del documento, non si vedrà perché non contiene testo e viene eliminato immediatamente.
+    link.click(); //simula un click sul link, innescando il download del file
+    link.remove(); // rimuove il link dal DOM, non serve più
+
+    URL.revokeObjectURL(url); // rimuove l'oggetto URL temporaneo creato che punta al blob, per liberare memoria
+  };
+
   return (
     <main className="relative min-h-screen">
       <Navbar />
@@ -29,12 +47,19 @@ function QrCodeDetailsPage() {
           </Link>
 
           <div className="mt-8 grid gap-8 lg:grid-cols-[320px_1fr]">
-            <div className="rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-6 backdrop-blur-md">
+            <div className="flex h-full flex-col rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-6 backdrop-blur-md">
               <img
                 src={qrCode.qrImageUrl}
                 alt={qrCode.title}
                 className="w-full"
               />
+
+              <button
+                onClick={handleDownloadQr}
+                className="mt-auto rounded-sm border border-[var(--color-border)] px-4 py-2 text-sm hover:border-[var(--color-primary)] hover:text-[var(--color-text)] transition"
+              >
+                Scarica QR
+              </button>
             </div>
 
             <div className="rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-6 backdrop-blur-md md:p-8">
