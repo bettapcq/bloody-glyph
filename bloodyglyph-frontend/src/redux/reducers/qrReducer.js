@@ -5,10 +5,14 @@ import {
   CREATE_QR_LOADING,
   CREATE_QR_SUCCESS,
   CREATE_QR_ERROR,
+  GET_QR_BY_ID_LOADING,
+  GET_QR_BY_ID_SUCCESS,
+  GET_QR_BY_ID_ERROR,
 } from "../actions/qrActions";
 
 const initialState = {
   qrCodes: [],
+  selectedQrCode: null,
   loading: false,
   error: null,
 };
@@ -53,6 +57,28 @@ const qrReducer = (state = initialState, action) => {
       };
 
     case CREATE_QR_ERROR:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    case GET_QR_BY_ID_LOADING:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case GET_QR_BY_ID_SUCCESS:
+      return {
+        ...state,
+        selectedQrCode: action.payload,
+        loading: false,
+        error: null,
+      };
+
+    case GET_QR_BY_ID_ERROR:
       return {
         ...state,
         loading: false,

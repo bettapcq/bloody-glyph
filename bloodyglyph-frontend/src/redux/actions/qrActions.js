@@ -4,6 +4,9 @@ export const GET_QR_LOADING = "GET_QR_LOADING";
 export const CREATE_QR_LOADING = "CREATE_QR_LOADING";
 export const CREATE_QR_SUCCESS = "CREATE_QR_SUCCESS";
 export const CREATE_QR_ERROR = "CREATE_QR_ERROR";
+export const GET_QR_BY_ID_LOADING = "GET_QR_BY_ID_LOADING";
+export const GET_QR_BY_ID_SUCCESS = "GET_QR_BY_ID_SUCCESS";
+export const GET_QR_BY_ID_ERROR = "GET_QR_BY_ID_ERROR";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -115,6 +118,39 @@ export const createQrCodeFromFile = (payload) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: CREATE_QR_ERROR,
+      payload: error.message || "Errore di connessione al server",
+    });
+
+    throw error;
+  }
+};
+
+// ottiene un QR code per id
+export const getQrCodeById = (qrId) => async (dispatch, getState) => {
+  dispatch({ type: GET_QR_BY_ID_LOADING });
+
+  const token = getState().auth.token;
+
+  try {
+    const response = await fetch(`${API_URL}/qr/${qrId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Errore durante il recupero del QR code");
+    }
+    const data = await response.json();
+
+    dispatch({
+      type: GET_QR_BY_ID_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: GET_QR_BY_ID_ERROR,
       payload: error.message || "Errore di connessione al server",
     });
 

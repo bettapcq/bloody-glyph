@@ -28,7 +28,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/qrcodes/new" element={<NewQrCodePage />} />
-        <Route path="/qrcodes/details" element={<QrCodeDetailsPage />} />
+        <Route path="/qrcodes/:qrId" element={<QrCodeDetailsPage />} />
       </Routes>
     </BrowserRouter>
   );

@@ -7,7 +7,7 @@ const QrCard = ({ qr }) => {
   return (
     <article className="group rounded-sm border border-[var(--color-border)] bg-black/20 p-4 transition hover:border-[var(--color-primary)]/60">
       <div className="overflow-hidden rounded-sm border border-[var(--color-border)] bg-[var(--color-bg)]">
-        <Link to={`/qrcodes/details`}>
+        <Link to={`/qrcodes/${qr.qrId}`}>
           <img
             src={qr.qrImageUrl}
             alt={`QR code ${qr.title}`}
@@ -21,7 +21,7 @@ const QrCard = ({ qr }) => {
           <h3 className="font-medium">{qr.title}</h3>
 
           <Link
-            to={`/qrcodes/details`}
+            to={`/qrcodes/${qr.qrId}`}
             type="button"
             className="text-[var(--color-text-secondary)] transition hover:text-[var(--color-text)]"
           >
