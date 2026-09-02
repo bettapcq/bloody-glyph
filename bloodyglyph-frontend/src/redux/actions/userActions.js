@@ -1,5 +1,11 @@
 export const GET_ME_SUCCESS = "GET_ME_SUCCESS";
 export const GET_ME_ERROR = "GET_ME_ERROR";
+export const UPDATE_PRIVACY_SETTINGS_LOADING =
+  "UPDATE_PRIVACY_SETTINGS_LOADING";
+export const UPDATE_PRIVACY_SETTINGS_SUCCESS =
+  "UPDATE_PRIVACY_SETTINGS_SUCCESS";
+export const UPDATE_PRIVACY_SETTINGS_ERROR = "UPDATE_PRIVACY_SETTINGS_ERROR";
+export const CLEAR_USER_ERROR = "CLEAR_USER_ERROR";
 
 export const getMe = () => {
   return async (dispatch, getState) => {
@@ -41,3 +47,53 @@ export const getMe = () => {
     }
   };
 };
+
+export const updatePrivacySettings = (payload) => {
+  return async (dispatch, getState) => {
+    dispatch({ type: UPDATE_PRIVACY_SETTINGS_LOADING });
+
+    const token = getState().auth.token;
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/users/me/privacy-settings`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Errore durante la modifica dell'account",
+        );
+      }
+
+      dispatch({
+        type: UPDATE_PRIVACY_SETTINGS_SUCCESS,
+        payload: data,
+      });
+
+      return true;
+    } catch (error) {
+      dispatch({
+        type: UPDATE_PRIVACY_SETTINGS_ERROR,
+        payload:
+          error.message ||
+          "Errore durante l'aggiornamento delle impostazioni di privacy",
+      });
+
+      return false;
+    }
+  };
+};
+
+export const clearUserError = () => ({
+  type: CLEAR_USER_ERROR,
+});

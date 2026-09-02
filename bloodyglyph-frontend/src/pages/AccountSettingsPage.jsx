@@ -1,13 +1,56 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiMail, FiLock, FiTrash2, FiEye, FiEyeOff } from "react-icons/fi";
 import AlertModal from "../components/AlertModal";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  updatePrivacySettings,
+  clearUserError,
+} from "../redux/actions/userActions";
+import { validationRules } from "../validationRules";
 
 function AccountSettingsPage() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const dispatch = useDispatch();
+  const { currentUser, loading, error } = useSelector((state) => state.users);
+  const [email, setEmail] = useState("");
+  const [validatedEmail, setValidatedEmail] = useState(false);
+  const [emailSuccess, setEmailSuccess] = useState("");
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearUserError());
+    };
+  }, [dispatch]);
+
+  const handleEmailChange = async (e) => {
+    e.preventDefault();
+
+    dispatch(clearUserError());
+
+    const form = e.currentTarget;
+
+    if (!form.checkValidity()) {
+      setValidatedEmail(true);
+      return;
+    }
+
+    const success = await dispatch(
+      updatePrivacySettings({
+        email,
+      }),
+    );
+
+    if (success) {
+      setEmail("");
+      setValidatedEmail(false);
+      setEmailSuccess("Email aggiornata con successo!");
+    }
+  };
 
   return (
     <>
@@ -48,12 +91,12 @@ function AccountSettingsPage() {
                   </p>
                   <p className="mt-1 text-sm text-[var(--color-text-secondary)]">
                     Email attuale:{" "}
-                    <span className="font-semibold">user@example.com</span>
+                    <span className="font-semibold">{currentUser?.email}</span>
                   </p>
                 </div>
               </div>
 
-              <form className="mt-6">
+              <form className="mt-6" onSubmit={handleEmailChange} noValidate>
                 <label
                   htmlFor="email"
                   className="text-sm text-[var(--color-text-secondary)]"
@@ -64,16 +107,37 @@ function AccountSettingsPage() {
                 <input
                   id="email"
                   type="email"
+                  value={email}
                   placeholder="nuova@email.it"
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setEmailSuccess("");
+                    dispatch(clearUserError());
+                  }}
                   className="mt-2 w-full rounded-sm border border-[var(--color-border)] bg-black/20 px-4 py-3 text-sm outline-none transition placeholder:text-[var(--color-text-secondary)]/50 focus:border-[var(--color-primary)]"
+                  required={validationRules.email.required}
+                  pattern={validationRules.email.pattern}
                 />
 
+                {validatedEmail &&
+                  !new RegExp(validationRules.email.pattern).test(email) && (
+                    <p className="mt-1 text-xs text-[var(--color-primary-hover)]">
+                      {validationRules.email.message}
+                    </p>
+                  )}
+
+                {error && (
+                  <p className="mt-2 text-sm text-[var(--color-primary)]">
+                    {error}
+                  </p>
+                )}
+                {emailSuccess && <p className="mt-2 text-sm">{emailSuccess}</p>}
                 <div className="mt-6 flex justify-end">
                   <button
                     type="submit"
                     className="rounded-sm bg-[var(--color-primary)] px-5 py-2.5 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]"
                   >
-                    Salva email
+                    {loading ? "Salvataggio..." : "Salva email"}
                   </button>
                 </div>
               </form>

@@ -81,7 +81,7 @@ function DashboardSection() {
               {qrCodes ? qrCodes.length : 0} / 3
             </p>
           </div>
-          {/* CATEGORIE: DA IMPLEMENTARE SUCCESSIVAMENTE 
+          {/* TODO: CATEGORIE DA IMPLEMENTARE SUCCESSIVAMENTE 
           <div className="w-50 rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/80 p-5">
             <p className="text-sm text-[var(--color-text-secondary)]">
               Categorie

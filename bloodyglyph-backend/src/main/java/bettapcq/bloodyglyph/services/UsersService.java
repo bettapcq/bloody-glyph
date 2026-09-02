@@ -103,12 +103,17 @@ public class UsersService implements UserDetailsService {
 
         //check email già esistente
 
-        if (payload.email() != null && !payload.email().isBlank()) {
+        if (payload.email() != null
+                && !payload.email().isBlank()
+                && !payload.email().equalsIgnoreCase(currentUser.getEmail())) {
 
             boolean emailExists = usersRepository.existsByEmail(payload.email());
 
-            if (emailExists)
-                throw new BadRequestException("Questa mail è già assegnata a un altro account");
+            if (emailExists) {
+                throw new BadRequestException(
+                        "Questa mail è già assegnata a un altro account"
+                );
+            }
 
             currentUser.setEmail(payload.email());
             emailChanged = true;

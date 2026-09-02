@@ -1,4 +1,11 @@
-import { GET_ME_SUCCESS, GET_ME_ERROR } from "../actions/userActions";
+import {
+  GET_ME_SUCCESS,
+  GET_ME_ERROR,
+  UPDATE_PRIVACY_SETTINGS_LOADING,
+  UPDATE_PRIVACY_SETTINGS_SUCCESS,
+  UPDATE_PRIVACY_SETTINGS_ERROR,
+  CLEAR_USER_ERROR,
+} from "../actions/userActions";
 import { LOGOUT } from "../actions/authActions";
 
 const initialState = {
@@ -26,6 +33,34 @@ function UserReducer(state = initialState, action) {
       return {
         ...state,
         currentUser: null,
+        error: null,
+      };
+
+    case UPDATE_PRIVACY_SETTINGS_LOADING:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case UPDATE_PRIVACY_SETTINGS_SUCCESS:
+      return {
+        ...state,
+        currentUser: action.payload,
+        loading: false,
+        error: null,
+      };
+
+    case UPDATE_PRIVACY_SETTINGS_ERROR:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    case CLEAR_USER_ERROR:
+      return {
+        ...state,
         error: null,
       };
 
