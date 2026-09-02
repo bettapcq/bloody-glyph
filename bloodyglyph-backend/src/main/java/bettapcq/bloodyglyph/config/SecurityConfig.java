@@ -3,6 +3,7 @@ package bettapcq.bloodyglyph.config;
 import bettapcq.bloodyglyph.security.JWTCheckerFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -70,6 +71,7 @@ public class SecurityConfig {
 
                 //  Comunico quali endpoint sono pubblici e quali protetti
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(
                                 "/auth/**",
                                 "/q/**",
