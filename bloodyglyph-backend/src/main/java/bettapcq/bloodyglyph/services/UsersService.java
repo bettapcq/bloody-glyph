@@ -125,7 +125,16 @@ public class UsersService implements UserDetailsService {
                     payload.currentPassword().isBlank() ||
                     !passwordEncoder.matches(payload.currentPassword(), currentUser.getPassword())) {
 
-                throw new BadRequestException("Current password wrong");
+                throw new BadRequestException("La password attuale non è corretta");
+            }
+
+            if (passwordEncoder.matches(
+                    payload.newPassword(),
+                    currentUser.getPassword()
+            )) {
+                throw new BadRequestException(
+                        "La nuova password deve essere diversa da quella attuale"
+                );
             }
 
             currentUser.setPassword(passwordEncoder.encode(payload.newPassword()));

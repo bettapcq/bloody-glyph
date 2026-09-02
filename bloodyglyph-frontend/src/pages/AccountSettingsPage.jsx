@@ -16,10 +16,15 @@ function AccountSettingsPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const dispatch = useDispatch();
-  const { currentUser, loading, error } = useSelector((state) => state.users);
+  const { currentUser, error } = useSelector((state) => state.users);
   const [email, setEmail] = useState("");
   const [validatedEmail, setValidatedEmail] = useState(false);
   const [emailSuccess, setEmailSuccess] = useState("");
+  const [validatedPassword, setValidatedPassword] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
+  const [loadingType, setLoadingType] = useState(null); //serve per non far apparire loading contemporaneamente sia a cambia email che a cambia password
 
   useEffect(() => {
     return () => {
@@ -39,16 +44,52 @@ function AccountSettingsPage() {
       return;
     }
 
+    setLoadingType("email");
+
     const success = await dispatch(
       updatePrivacySettings({
         email,
       }),
     );
 
+    setLoadingType(null);
+
     if (success) {
       setEmail("");
       setValidatedEmail(false);
       setEmailSuccess("Email aggiornata con successo!");
+    }
+  };
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+
+    dispatch(clearUserError());
+    setPasswordSuccess("");
+
+    const form = e.currentTarget;
+
+    if (!form.checkValidity()) {
+      setValidatedPassword(true);
+      return;
+    }
+
+    setLoadingType("password");
+
+    const success = await dispatch(
+      updatePrivacySettings({
+        currentPassword,
+        newPassword,
+      }),
+    );
+
+    setLoadingType(null);
+
+    if (success) {
+      setCurrentPassword("");
+      setNewPassword("");
+      setValidatedPassword(false);
+      setPasswordSuccess("Password aggiornata con successo!");
     }
   };
 
@@ -137,7 +178,7 @@ function AccountSettingsPage() {
                     type="submit"
                     className="rounded-sm bg-[var(--color-primary)] px-5 py-2.5 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]"
                   >
-                    {loading ? "Salvataggio..." : "Salva email"}
+                    {loadingType === "email" ? "Salvataggio..." : "Salva email"}
                   </button>
                 </div>
               </form>
@@ -161,7 +202,11 @@ function AccountSettingsPage() {
                 </div>
               </div>
 
-              <form className="mt-6 space-y-5">
+              <form
+                className="mt-6 space-y-5"
+                noValidate
+                onSubmit={handlePasswordChange}
+              >
                 <div>
                   <label
                     htmlFor="currentPassword"
@@ -173,8 +218,15 @@ function AccountSettingsPage() {
                   <div className="relative mt-2">
                     <input
                       id="currentPassword"
+                      value={currentPassword}
+                      onChange={(e) => {
+                        setCurrentPassword(e.target.value);
+                        setPasswordSuccess("");
+                        dispatch(clearUserError());
+                      }}
                       type={showCurrentPassword ? "text" : "password"}
                       className="w-full rounded-sm border border-[var(--color-border)] bg-black/20 px-4 py-3 pr-12 text-sm outline-none transition focus:border-[var(--color-primary)]"
+                      required={validationRules.password.required}
                     />
 
                     <button
@@ -188,7 +240,6 @@ function AccountSettingsPage() {
                     </button>
                   </div>
                 </div>
-
                 <div>
                   <label
                     htmlFor="newPassword"
@@ -200,10 +251,17 @@ function AccountSettingsPage() {
                   <div className="relative mt-2">
                     <input
                       id="newPassword"
+                      onChange={(e) => {
+                        setNewPassword(e.target.value);
+                        setPasswordSuccess("");
+                        dispatch(clearUserError());
+                      }}
+                      value={newPassword}
                       type={showNewPassword ? "text" : "password"}
                       className="w-full rounded-sm border border-[var(--color-border)] bg-black/20 px-4 py-3 pr-12 text-sm outline-none transition focus:border-[var(--color-primary)]"
+                      required={validationRules.password.required}
+                      pattern={validationRules.password.pattern}
                     />
-
                     <button
                       type="button"
                       onClick={() => setShowNewPassword(!showNewPassword)}
@@ -213,13 +271,30 @@ function AccountSettingsPage() {
                     </button>
                   </div>
                 </div>
-
+                {validatedPassword &&
+                  !new RegExp(validationRules.password.pattern).test(
+                    newPassword,
+                  ) && (
+                    <p className="mt-1 text-xs text-[var(--color-primary-hover)]">
+                      {validationRules.password.message}
+                    </p>
+                  )}
+                {error && (
+                  <p className="mt-2 text-sm text-[var(--color-primary)]">
+                    {error}
+                  </p>
+                )}
+                {passwordSuccess && (
+                  <p className="mt-2 text-sm">{passwordSuccess}</p>
+                )}{" "}
                 <div className="flex justify-end">
                   <button
                     type="submit"
                     className="rounded-sm bg-[var(--color-primary)] px-5 py-2.5 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]"
                   >
-                    Cambia password
+                    {loadingType === "password"
+                      ? "Salvataggio..."
+                      : "Cambia password"}
                   </button>
                 </div>
               </form>

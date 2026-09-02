@@ -11,6 +11,7 @@ import { LOGOUT } from "../actions/authActions";
 const initialState = {
   currentUser: null,
   error: null,
+  loading: false,
 };
 
 function UserReducer(state = initialState, action) {
