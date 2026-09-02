@@ -12,7 +12,7 @@ function Footer() {
         <p className="text-xs">
           Design and development by{" "}
           <a
-            href="https://elisbettapiacquadiodev.it"
+            href="https://elisabettapiacquadiodev.it"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
