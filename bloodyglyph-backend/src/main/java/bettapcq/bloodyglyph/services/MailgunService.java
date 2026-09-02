@@ -38,7 +38,7 @@ public class MailgunService {
 
         // Costruisce l'endpoint di Mailgun
         String url =
-                "https://api.mailgun.net/v3/"
+                "https://api.eu.mailgun.net/v3/"
                         + mailgunProperties.getDomain()
                         + "/messages";
 
