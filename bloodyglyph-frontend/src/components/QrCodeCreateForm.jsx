@@ -197,6 +197,7 @@ function QrCodeCreateForm() {
             </div>
           )}
 
+          {/* TODO: CATEGORIA DA IMPLEMENTARE SUCCESSIVAMENTE 
           <div className="mt-6">
             <label
               htmlFor="category"
@@ -219,7 +220,7 @@ function QrCodeCreateForm() {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
           {error && (
             <p className="mt-6 text-sm text-[var(--color-primary)]">{error}</p>
           )}
