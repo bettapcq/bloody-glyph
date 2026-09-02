@@ -10,6 +10,7 @@ import DashboardPage from "./pages/DashboardPage";
 import QrCodeDetailsPage from "./pages/QrCodeDetailsPage";
 import QrCodeFormPage from "./pages/QrCodeFormPage";
 import ProtectedRoute from "./components/ProtectedRoutes";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
