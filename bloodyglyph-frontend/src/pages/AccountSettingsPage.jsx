@@ -7,8 +7,11 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   updatePrivacySettings,
   clearUserError,
+  deleteUserAccount,
 } from "../redux/actions/userActions";
 import { validationRules } from "../validationRules";
+import { useNavigate } from "react-router-dom";
+import { logoutUser } from "../redux/actions/authActions";
 
 function AccountSettingsPage() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -25,6 +28,7 @@ function AccountSettingsPage() {
   const [newPassword, setNewPassword] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
   const [loadingType, setLoadingType] = useState(null); //serve per non far apparire loading contemporaneamente sia a cambia email che a cambia password
+  const navigate = useNavigate();
 
   useEffect(() => {
     return () => {
@@ -32,6 +36,7 @@ function AccountSettingsPage() {
     };
   }, [dispatch]);
 
+  //cambio mail
   const handleEmailChange = async (e) => {
     e.preventDefault();
 
@@ -61,6 +66,7 @@ function AccountSettingsPage() {
     }
   };
 
+  //cambio password
   const handlePasswordChange = async (e) => {
     e.preventDefault();
 
@@ -90,6 +96,30 @@ function AccountSettingsPage() {
       setNewPassword("");
       setValidatedPassword(false);
       setPasswordSuccess("Password aggiornata con successo!");
+    }
+  };
+
+  //eliminazione account
+  const handleDeleteAccount = async () => {
+    dispatch(clearUserError());
+
+    setLoadingType("delete");
+
+    const success = await dispatch(deleteUserAccount());
+
+    setLoadingType(null);
+
+    if (success) {
+      setShowDeleteModal(false);
+
+      navigate("/login", {
+        // al success, mandiamo l'utente alla pagina di registrazione e traferiamo nello state di location il deleted:true (vai a FormRegister)
+
+        replace: true,
+        state: {
+          accountDeleted: true,
+        },
+      });
     }
   };
 
@@ -334,10 +364,12 @@ function AccountSettingsPage() {
         <AlertModal
           isOpen={showDeleteModal}
           onClose={() => setShowDeleteModal(false)}
-          onConfirm={() => {}}
+          onConfirm={handleDeleteAccount}
           title="Eliminare definitivamente l'account?"
           message="Questa operazione è irreversibile. Tutti i QR code e i dati associati verranno eliminati."
-          confirmText="Elimina account"
+          confirmText={
+            loadingType === "delete" ? "Eliminazione..." : "Elimina account"
+          }
         />
       </section>
       <Footer />

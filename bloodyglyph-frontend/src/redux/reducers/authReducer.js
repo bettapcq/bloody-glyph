@@ -1,8 +1,10 @@
 import {
   LOGIN_SUCCESS,
   LOGIN_ERROR,
+  LOGIN_LOADING,
   REGISTER_SUCCESS,
   REGISTER_ERROR,
+  REGISTER_LOADING,
   CLEAR_AUTH_ERROR,
   LOGOUT,
   RESET_PASSWORD_SUCCESS,
@@ -21,6 +23,12 @@ const initialState = {
 function AuthReducer(state = initialState, action) {
   switch (action.type) {
     // LOGIN
+    case LOGIN_LOADING:
+      return {
+        ...state,
+        error: null,
+        loading: true,
+      };
 
     case LOGIN_SUCCESS:
       return {
@@ -40,6 +48,13 @@ function AuthReducer(state = initialState, action) {
       };
 
     // REGISTER
+
+    case REGISTER_LOADING:
+      return {
+        ...state,
+        error: null,
+        loading: true,
+      };
 
     case REGISTER_SUCCESS:
       return {

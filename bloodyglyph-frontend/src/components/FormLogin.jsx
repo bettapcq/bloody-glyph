@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
-import { clearAuthError, loginUser } from "../redux/actions/authActions";
+import {
+  clearAuthError,
+  loginUser,
+  logoutUser,
+} from "../redux/actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
 import { validationRules } from "../validationRules";
 import { getMe } from "../redux/actions/userActions";
 import ResetPasswordModal from "./ResetPasswordModal";
+import AlertModal from "./AlertModal";
 
 const FormLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,11 +18,18 @@ const FormLogin = () => {
   const [password, setPassword] = useState("");
   const [validated, setValidated] = useState(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const accountDeleted = location.state?.accountDeleted; // ce lo passa AccountSettings quando viene eliminato l'account e l'user viene mandato qui ( traferendo lo state userDeleted:true )
 
-  const { error } = useSelector((state) => state.auth);
+  useEffect(() => {
+    if (accountDeleted) {
+      dispatch(logoutUser());
+    }
+  }, [accountDeleted, dispatch]);
+
+  const { error, loading } = useSelector((state) => state.auth);
 
   useEffect(() => {
     return () => {
@@ -146,9 +158,10 @@ const FormLogin = () => {
 
           <button
             type="submit"
+            disabled={loading}
             className="group relative w-full overflow-hidden rounded-sm bg-[var(--color-primary)] px-6 py-3.5 text-sm font-semibold uppercase tracking-[0.15em] transition hover:bg-[var(--color-primary-hover)]"
           >
-            Accedi
+            {loading ? "Accesso..." : "Accedi"}
           </button>
         </form>
 
@@ -174,6 +187,18 @@ const FormLogin = () => {
       <ResetPasswordModal
         isOpen={isResetModalOpen}
         onClose={() => setIsResetModalOpen(false)}
+      />
+      <AlertModal
+        isOpen={accountDeleted}
+        onClose={() => {
+          navigate("/login", {
+            replace: true,
+            state: {}, // ripuliamo lo state di location
+          });
+        }}
+        title="Account eliminato"
+        message="Il tuo account è stato eliminato con successo."
+        confirmText="OK"
       />
     </section>
   );

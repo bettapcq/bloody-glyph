@@ -8,6 +8,7 @@ import {
   clearAuthError,
 } from "../redux/actions/authActions";
 import { validationRules } from "../validationRules";
+import { getMe } from "../redux/actions/userActions";
 
 const FormRegister = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -22,7 +23,7 @@ const FormRegister = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { error } = useSelector((state) => state.auth);
+  const { error, loading } = useSelector((state) => state.auth);
 
   useEffect(() => {
     return () => {
@@ -54,6 +55,8 @@ const FormRegister = () => {
     const logged = await dispatch(loginUser(email, password));
 
     if (logged) {
+      await dispatch(getMe());
+
       navigate("/dashboard");
     }
   };
@@ -216,9 +219,10 @@ const FormRegister = () => {
           )}
           <button
             type="submit"
+            disabled={loading}
             className="group relative w-full overflow-hidden rounded-sm bg-[var(--color-primary)] px-6 py-3.5 text-sm font-semibold uppercase tracking-[0.15em] transition hover:bg-[var(--color-primary-hover)]"
           >
-            Registrati
+            {loading ? "Registrazione..." : "Registrati"}
           </button>
         </form>
         {/* DIVIDER */}

@@ -1,5 +1,7 @@
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_ERROR = "LOGIN_ERROR";
+export const LOGIN_LOADING = "LOGIN_LOADING";
+export const REGISTER_LOADING = "REGISTER_LOADING";
 export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const REGISTER_ERROR = "REGISTER_ERROR";
 export const CLEAR_AUTH_ERROR = "CLEAR_AUTH_ERROR";
@@ -11,6 +13,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 // REGISTER
 export const registerUser = (username, email, password) => async (dispatch) => {
+  dispatch({ type: REGISTER_LOADING });
+
   try {
     const response = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
@@ -52,6 +56,8 @@ export const registerUser = (username, email, password) => async (dispatch) => {
 
 // LOGIN
 export const loginUser = (email, password) => async (dispatch) => {
+  dispatch({ type: LOGIN_LOADING });
+
   try {
     const response = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
