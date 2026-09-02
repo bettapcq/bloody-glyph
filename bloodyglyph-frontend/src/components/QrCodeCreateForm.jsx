@@ -14,6 +14,7 @@ import {
   createQrCodeFromFile,
 } from "../redux/actions/qrActions";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 function QrCodeCreateForm() {
   const dispatch = useDispatch();
@@ -79,7 +80,13 @@ function QrCodeCreateForm() {
           Torna alla dashboard
         </Link>
 
-        <div className="mt-8">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          viewport={{ once: true, amount: 0.3 }}
+          className="mt-8"
+        >
           <p className="text-sm uppercase tracking-[0.25em] text-[var(--color-primary)]">
             Nuovo sigillo
           </p>
@@ -92,9 +99,17 @@ function QrCodeCreateForm() {
             Scegli il tipo di contenuto da collegare al tuo QR code. Potrai
             modificare la destinazione in seguito senza rigenerare il sigillo.
           </p>
-        </div>
+        </motion.div>
 
-        <form
+        <motion.form
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.5,
+            delay: 0.15,
+            ease: "easeOut",
+          }}
+          viewport={{ once: true, amount: 0.15 }}
           onSubmit={handleSubmit}
           className="mt-10 rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-6 backdrop-blur-md md:p-8"
         >
@@ -240,7 +255,7 @@ function QrCodeCreateForm() {
               {loading ? "Creazione..." : "Crea QR code"}
             </button>
           </div>
-        </form>
+        </motion.form>
       </div>
     </section>
   );

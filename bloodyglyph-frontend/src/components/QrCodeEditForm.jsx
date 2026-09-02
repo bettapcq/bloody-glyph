@@ -15,6 +15,7 @@ import {
   updateQrCodeFromFile,
   updateQrCodeFromUrl,
 } from "../redux/actions/qrActions";
+import { motion } from "framer-motion";
 
 function QrCodeEditForm() {
   const dispatch = useDispatch();
@@ -129,7 +130,13 @@ function QrCodeEditForm() {
           Torna al dettaglio
         </Link>
 
-        <div className="mt-8">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          viewport={{ once: true, amount: 0.3 }}
+          className="mt-8"
+        >
           <p className="text-sm uppercase tracking-[0.25em] text-[var(--color-primary)]">
             Modifica sigillo
           </p>
@@ -137,9 +144,17 @@ function QrCodeEditForm() {
           <h1 className="mt-3 font-[var(--font-title)] text-4xl font-bold md:text-5xl">
             Modifica QR code
           </h1>
-        </div>
+        </motion.div>
 
-        <form
+        <motion.form
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.5,
+            delay: 0.15,
+            ease: "easeOut",
+          }}
+          viewport={{ once: true, amount: 0.15 }}
           onSubmit={handleSubmit}
           className="mt-10 rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-6 backdrop-blur-md md:p-8"
         >
@@ -329,7 +344,7 @@ function QrCodeEditForm() {
               {loading ? "Aggiornamento.." : "Modifica QR code"}
             </button>
           </div>
-        </form>
+        </motion.form>
       </div>
     </section>
   );

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FiMail, FiX } from "react-icons/fi";
-
+import { motion } from "framer-motion";
 import { clearAuthError, resetPassword } from "../redux/actions/authActions";
 
 const ResetPasswordModal = ({ isOpen, onClose }) => {
@@ -37,7 +37,10 @@ const ResetPasswordModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.2 }}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-5 backdrop-blur-sm"
       onClick={handleClose}
     >
@@ -113,7 +116,7 @@ const ResetPasswordModal = ({ isOpen, onClose }) => {
           </button>
         </form>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

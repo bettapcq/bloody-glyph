@@ -6,6 +6,7 @@ import { getMyQrCodes } from "../redux/actions/qrActions";
 import { getMyCategories } from "../redux/actions/categoryActions";
 import { useNavigate } from "react-router-dom";
 import AlertModal from "./AlertModal";
+import { motion } from "framer-motion";
 
 function DashboardSection() {
   const { currentUser } = useSelector((state) => state.users);
@@ -43,7 +44,13 @@ function DashboardSection() {
             backgroundImage: "url('/portal-bg.png')",
           }}
         >
-          <div className="z-10 px-7 py-14 md:px-12 md:py-20">
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            viewport={{ once: true, amount: 0.3 }}
+            className="z-10 px-7 py-14 md:px-12 md:py-20"
+          >
             <p className="text-sm uppercase tracking-[0.25em] text-[var(--color-primary)]">
               Dashboard
             </p>
@@ -67,12 +74,18 @@ function DashboardSection() {
               <FiPlus />
               Crea QR code
             </button>
-          </div>
+          </motion.div>
         </div>
 
         {/* STATS BASE */}
         <div className="mt-6 flex justify-end gap-4">
-          <div className="w-50 rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/80 p-5">
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
+            viewport={{ once: true, amount: 0.3 }}
+            className="w-50 rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/80 p-5"
+          >
             <p className="text-sm text-[var(--color-text-secondary)]">
               QR code creati
             </p>
@@ -80,7 +93,7 @@ function DashboardSection() {
             <p className="mt-2 font-[var(--font-title)] text-3xl">
               {qrCodes ? qrCodes.length : 0} / 3
             </p>
-          </div>
+          </motion.div>
           {/* TODO: CATEGORIE DA IMPLEMENTARE SUCCESSIVAMENTE 
           <div className="w-50 rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/80 p-5">
             <p className="text-sm text-[var(--color-text-secondary)]">
@@ -91,15 +104,6 @@ function DashboardSection() {
             </p>
           </div> */}
         </div>
-        {/* PIANO FREE/A PAGAMENTO DA VALUTARE IMPLEMENTAZIONE
-          <div className="rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/80 p-5">
-            <p className="text-sm text-[var(--color-text-secondary)]">
-              Piano attuale
-            </p>
-
-            <p className="mt-2 font-[var(--font-title)] text-3xl">Free</p>
-          </div>
-        */}
 
         {/* QR SECTION */}
         <div className="mt-10 rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-6 backdrop-blur-md md:p-8">
@@ -155,8 +159,21 @@ function DashboardSection() {
           {/* CARDS */}
           {!loading && !error && (
             <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {qrCodes?.map((qr) => (
-                <QrCard key={qr.qrId} qr={qr} />
+              {qrCodes?.map((qr, index) => (
+                <motion.div
+                  key={qr.qrId}
+                  initial={{ opacity: 0, y: 25 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: index * 0.08,
+                    ease: "easeOut",
+                  }}
+                  viewport={{ once: true, amount: 0.2 }}
+                >
+                  {" "}
+                  <QrCard qr={qr} />
+                </motion.div>
               ))}
 
               {/* CREATE CARD */}

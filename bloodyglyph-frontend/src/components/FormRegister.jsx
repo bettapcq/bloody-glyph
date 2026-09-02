@@ -9,6 +9,7 @@ import {
 } from "../redux/actions/authActions";
 import { validationRules } from "../validationRules";
 import { getMe } from "../redux/actions/userActions";
+import { motion } from "framer-motion";
 
 const FormRegister = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -63,15 +64,26 @@ const FormRegister = () => {
 
   return (
     <section className="flex items-center justify-center overflow-hidden px-5 pb-20 pt-35 text-[var(--color-text)] md:px-8 md:pt-50">
-      <div className="relative w-full md:max-w-xl rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/80 px-7 pb-8 pt-12 shadow-2xl backdrop-blur-md sm:px-12">
-        <div className="absolute left-1/2 top-0 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 rotate-45 items-center justify-center border border-[var(--color-primary)] bg-[var(--color-surface)] shadow-[0_0_30px_rgba(122,12,18,0.25)]">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="relative w-full md:max-w-xl rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/80 px-7 pb-8 pt-12 shadow-2xl backdrop-blur-md sm:px-12"
+      >
+        {" "}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.85, rotate: 45 }}
+          animate={{ opacity: 1, scale: 1, rotate: 45 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="absolute left-1/2 top-0 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center border border-[var(--color-primary)] bg-[var(--color-surface)] shadow-[0_0_30px_rgba(122,12,18,0.25)]"
+        >
+          {" "}
           <img
             src="/logo-puro.png"
             alt="Glyph logo"
             className="w-full h-full object-contain rotate-[-45deg]"
           />
-        </div>
-
+        </motion.div>
         <div className="mb-8 mt-4 text-center">
           <h2 className="font-[var(--font-title)] text-2xl font-bold uppercase">
             Crea il tuo account
@@ -79,7 +91,6 @@ const FormRegister = () => {
 
           <div className="mx-auto mt-4 h-px w-16 bg-[var(--color-primary)]" />
         </div>
-
         {/* FORM */}
         <form className="space-y-6" onSubmit={handleSubmit} noValidate>
           <label
@@ -233,7 +244,6 @@ const FormRegister = () => {
 
           <span className="h-px flex-1 bg-[var(--color-border)]" />
         </div>
-
         <p className="mt-6 text-center text-sm text-[var(--color-text-secondary)]">
           Hai già un account?{" "}
           <Link
@@ -243,7 +253,7 @@ const FormRegister = () => {
             Accedi
           </Link>
         </p>
-      </div>
+      </motion.div>
     </section>
   );
 };

@@ -11,7 +11,7 @@ import {
 } from "../redux/actions/userActions";
 import { validationRules } from "../validationRules";
 import { useNavigate } from "react-router-dom";
-import { logoutUser } from "../redux/actions/authActions";
+import { motion } from "framer-motion";
 
 function AccountSettingsPage() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -129,7 +129,12 @@ function AccountSettingsPage() {
 
       <section className="px-5 pb-20 pt-24 text-[var(--color-text)] md:px-8 lg:pt-36">
         <div className="mx-auto max-w-4xl">
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            viewport={{ once: true, amount: 0.3 }}
+          >
             <p className="text-sm uppercase tracking-[0.25em] text-[var(--color-primary)]">
               Impostazioni account
             </p>
@@ -142,11 +147,17 @@ function AccountSettingsPage() {
               Aggiorna email e password oppure elimina definitivamente il tuo
               account.
             </p>
-          </div>
+          </motion.div>
 
           <div className="mt-10 space-y-8">
             {/* EMAIL */}
-            <div className="rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-6 backdrop-blur-md md:p-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              viewport={{ once: true, amount: 0.2 }}
+              className="rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-6 backdrop-blur-md md:p-8"
+            >
               <div className="flex items-start gap-4">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-sm border border-[var(--color-primary)]/40 bg-[var(--color-primary)]/10 text-[var(--color-primary)]">
                   <FiMail size={20} />
@@ -212,10 +223,16 @@ function AccountSettingsPage() {
                   </button>
                 </div>
               </form>
-            </div>
+            </motion.div>
 
             {/* PASSWORD */}
-            <div className="rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-6 backdrop-blur-md md:p-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              viewport={{ once: true, amount: 0.2 }}
+              className="rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-6 backdrop-blur-md md:p-8"
+            >
               <div className="flex items-start gap-4">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-sm border border-[var(--color-primary)]/40 bg-[var(--color-primary)]/10 text-[var(--color-primary)]">
                   <FiLock size={20} />
@@ -328,10 +345,16 @@ function AccountSettingsPage() {
                   </button>
                 </div>
               </form>
-            </div>
+            </motion.div>
 
             {/* DELETE */}
-            <div className="rounded-sm border border-[var(--color-primary)]/40 bg-[var(--color-primary)]/5 p-6 backdrop-blur-md md:p-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              viewport={{ once: true, amount: 0.2 }}
+              className="rounded-sm border border-[var(--color-primary)]/40 bg-[var(--color-primary)]/5 p-6 backdrop-blur-md md:p-8"
+            >
               <div className="flex items-start gap-4">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-sm border border-[var(--color-primary)]/50 bg-[var(--color-primary)]/10 text-[var(--color-primary)]">
                   <FiTrash2 size={20} />
@@ -357,7 +380,7 @@ function AccountSettingsPage() {
                   </button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
 

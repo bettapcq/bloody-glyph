@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { deleteQrCode, getQrCodeById } from "../redux/actions/qrActions";
 import AlertModal from "../components/AlertModal";
+import { motion } from "framer-motion";
 
 function QrCodeDetailsPage() {
   const qrId = useParams().qrId;
@@ -62,7 +63,12 @@ function QrCodeDetailsPage() {
             Torna alla dashboard
           </Link>
 
-          <div className="mt-8">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="mt-8"
+          >
             {" "}
             {loading && (
               <p className="mt-6 text-sm text-[var(--color-text-secondary)]">
@@ -77,7 +83,13 @@ function QrCodeDetailsPage() {
             {selectedQrCode && (
               <div className="rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-6 backdrop-blur-md md:p-8">
                 <div className="grid gap-8 lg:grid-cols-[280px_1px_1fr] lg:items-start">
-                  <div className="flex flex-col items-center">
+                  <motion.div
+                    initial={{ opacity: 0, x: -35 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    className="flex flex-col items-center"
+                  >
                     <img
                       src={selectedQrCode.qrImageUrl}
                       alt={selectedQrCode.title}
@@ -90,7 +102,7 @@ function QrCodeDetailsPage() {
                     >
                       Scarica QR
                     </button>
-                  </div>
+                  </motion.div>
                   {/* DIVIDER */}
                   {/* DIVIDER */}
                   <div className="flex items-center gap-3 lg:h-full lg:flex-col">
@@ -100,7 +112,12 @@ function QrCodeDetailsPage() {
 
                     <span className="h-px flex-1 bg-[var(--color-border)] lg:h-auto lg:w-px" />
                   </div>
-                  <div>
+                  <motion.div
+                    initial={{ opacity: 0, x: 35 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+                    viewport={{ once: true, amount: 0.3 }}
+                  >
                     <p className="text-sm uppercase tracking-[0.25em] text-[var(--color-primary)]">
                       Dettaglio sigillo
                     </p>
@@ -184,11 +201,11 @@ function QrCodeDetailsPage() {
                         Elimina
                       </button>
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
               </div>
             )}
-          </div>
+          </motion.div>
         </div>
       </section>
       <AlertModal

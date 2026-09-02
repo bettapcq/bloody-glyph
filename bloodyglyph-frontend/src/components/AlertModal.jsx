@@ -1,4 +1,5 @@
 import { FiAlertTriangle, FiX } from "react-icons/fi";
+import { motion } from "framer-motion";
 
 function AlertModal({
   isOpen,
@@ -15,8 +16,18 @@ function AlertModal({
   const isConfirmModal = Boolean(onConfirm);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-5 backdrop-blur-sm">
-      <div className="relative w-full max-w-md rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)] p-7 shadow-2xl">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-5 backdrop-blur-sm"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92, y: 15 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
+        className="relative w-full max-w-md rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)] p-7 shadow-2xl"
+      >
         <button
           type="button"
           onClick={onClose}
@@ -66,8 +77,8 @@ function AlertModal({
             </button>
           )}
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
