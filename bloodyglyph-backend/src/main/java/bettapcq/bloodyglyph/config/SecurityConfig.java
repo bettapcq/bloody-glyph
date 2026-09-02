@@ -50,7 +50,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            JWTCheckerFilter jwtCheckerFilter
+            JWTCheckerFilter jwtCheckerFilter,
+            CorsConfigurationSource corsConfigurationSource
     ) throws Exception {
 
 
@@ -58,8 +59,9 @@ public class SecurityConfig {
                 // Disabilito CSRF perché sto usando autenticazione stateless con JWT
                 .csrf(csrf -> csrf.disable())
 
-                .cors(cors -> {
-                })
+                .cors(cors ->
+                        cors.configurationSource(corsConfigurationSource)
+                )
 
                 // Dico a Spring di non creare né usare sessioni lato server
                 .sessionManagement(session ->
