@@ -330,7 +330,7 @@ function QrCodeEditForm() {
           )}
           <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <Link
-              to="/dashboard"
+              to={`/qrcodes/${qrId}`}
               className="rounded-sm border border-[var(--color-border)] px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider text-[var(--color-text-secondary)] transition hover:text-[var(--color-text)]"
             >
               Annulla
