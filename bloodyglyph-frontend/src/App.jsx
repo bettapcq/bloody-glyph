@@ -11,6 +11,7 @@ import QrCodeDetailsPage from "./pages/QrCodeDetailsPage";
 import QrCodeFormPage from "./pages/QrCodeFormPage";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import ScrollToTop from "./components/ScrollToTop";
+import AccountSettingsPage from "./pages/AccountSettingsPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -62,6 +63,15 @@ function App() {
           element={
             <ProtectedRoute>
               <QrCodeDetailsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <AccountSettingsPage />
             </ProtectedRoute>
           }
         />
