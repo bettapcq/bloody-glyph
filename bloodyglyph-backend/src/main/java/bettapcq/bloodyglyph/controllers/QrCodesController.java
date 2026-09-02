@@ -2,10 +2,7 @@ package bettapcq.bloodyglyph.controllers;
 
 
 import bettapcq.bloodyglyph.exceptions.ValidationException;
-import bettapcq.bloodyglyph.payloads.requests.AssignCategoryDTO;
-import bettapcq.bloodyglyph.payloads.requests.NewQrCodeDTO;
-import bettapcq.bloodyglyph.payloads.requests.UpdateQrCodeDTO;
-import bettapcq.bloodyglyph.payloads.requests.UploadQrCodeDTO;
+import bettapcq.bloodyglyph.payloads.requests.*;
 import bettapcq.bloodyglyph.payloads.responses.QrCodeResponseDTO;
 import bettapcq.bloodyglyph.services.QrCodesService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -117,7 +114,9 @@ public class QrCodesController {
             summary = "Endpoint dedicato alla modifica di QR Code in un tipo PDF o IMAGE"
     )
     public QrCodeResponseDTO updateQrCodeFromFile(
-            @PathVariable Long qrId, @ModelAttribute @Valid UploadQrCodeDTO payload) {
+            @PathVariable Long qrId,
+            @ModelAttribute @Valid UpdateQrCodeFileDTO payload
+    ) {
         return qrCodesService.updateMyQrCodeFile(
                 qrId,
                 payload,

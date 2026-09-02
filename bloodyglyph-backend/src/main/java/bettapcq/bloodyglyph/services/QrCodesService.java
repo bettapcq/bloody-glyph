@@ -9,6 +9,7 @@ import bettapcq.bloodyglyph.exceptions.BadRequestException;
 import bettapcq.bloodyglyph.exceptions.NotFoundException;
 import bettapcq.bloodyglyph.payloads.requests.NewQrCodeDTO;
 import bettapcq.bloodyglyph.payloads.requests.UpdateQrCodeDTO;
+import bettapcq.bloodyglyph.payloads.requests.UpdateQrCodeFileDTO;
 import bettapcq.bloodyglyph.payloads.requests.UploadQrCodeDTO;
 import bettapcq.bloodyglyph.payloads.responses.CloudinaryUploadResponseDTO;
 import bettapcq.bloodyglyph.payloads.responses.QrCodeResponseDTO;
@@ -210,7 +211,10 @@ public class QrCodesService {
 
     }
 
-    public QrCodeResponseDTO updateMyQrCode(Long qrId, UpdateQrCodeDTO payload) {
+    public QrCodeResponseDTO updateMyQrCode(
+            Long qrId,
+            UpdateQrCodeDTO payload
+    ) {
 
         QrCode found = getMyQrEntity(qrId);
 
@@ -220,68 +224,28 @@ public class QrCodesService {
             );
         }
 
-        // Se prima era IMAGE o PDF, elimino il vecchio file da Cloudinary
-        if (found.getContentType() != QrContentType.URL
-                && found.getContentPublicId() != null) {
-            cloudinaryService.deleteContent(found.getContentPublicId(), found.getContentType());
-            found.setContentPublicId(null);
-        }
-
-        found.setOriginalFileName(null);
-
+        // L'URL deve essere presente
         if (payload.content() == null || payload.content().isBlank()) {
             throw new BadRequestException("L'URL è obbligatorio.");
         }
 
-        if (payload.title() != null) {
-            found.setTitle(payload.title());
-        }
-
-        found.setContent(payload.content());
-
-        found.setContentType(QrContentType.URL);
-
-        QrCode qrCodeUpdated = qrCodesRepository.save(found);
-        return toQrCodeResponseDTO(qrCodeUpdated);
-    }
-
-    public QrCodeResponseDTO updateMyQrCodeFile(Long qrId, UploadQrCodeDTO payload, MultipartFile file) {
-        QrCode found = getMyQrEntity(qrId);
-
-        if (payload.contentType() == QrContentType.URL) {
-            throw new BadRequestException(
-                    "Per convertire in URL utilizza l'endpoint dedicato."
-            );
-        }
-
-        if (file == null || file.isEmpty()) {
-            throw new BadRequestException("Il file è obbligatorio.");
-        }
-
-
-        if (payload.title() != null) {
-            found.setTitle(payload.title());
-        }
-
-        //recupero il vecchio file da cloudinary, per poterlo eliminare dopo
+        // Salvo i dati del vecchio contenuto prima di modificarli
         String oldContentPublicId = found.getContentPublicId();
         QrContentType oldContentType = found.getContentType();
 
+        // Aggiorno titolo e contenuto
+        found.setTitle(payload.title());
+        found.setContent(payload.content());
+        found.setContentType(QrContentType.URL);
 
-        found.setContentType(payload.contentType());
+        // Un URL non ha file associato
+        found.setContentPublicId(null);
+        found.setOriginalFileName(null);
 
-        CloudinaryUploadResponseDTO contentUpload =
-                cloudinaryService.uploadContent(
-                        file,
-                        payload.contentType()
-                );
-
-        found.setContentPublicId(contentUpload.publicId());
-        found.setContent(contentUpload.secureUrl());
-        found.setOriginalFileName(file.getOriginalFilename());
         QrCode qrCodeUpdated = qrCodesRepository.save(found);
 
-        //cancello da cloudinary il vecchio file (lo faccio dopo aver salvato quello nuovo per sicurezza)
+        // Se prima era IMAGE/PDF, elimino il vecchio file
+        // dopo che il QR è stato aggiornato correttamente
         if (oldContentPublicId != null
                 && oldContentType != QrContentType.URL) {
 
@@ -290,6 +254,71 @@ public class QrCodesService {
                     oldContentType
             );
         }
+
+        return toQrCodeResponseDTO(qrCodeUpdated);
+    }
+
+    public QrCodeResponseDTO updateMyQrCodeFile(
+            Long qrId,
+            UpdateQrCodeFileDTO payload,
+            MultipartFile file
+    ) {
+
+        QrCode found = getMyQrEntity(qrId);
+
+        if (payload.contentType() == QrContentType.URL) {
+            throw new BadRequestException(
+                    "Per convertire in URL utilizza l'endpoint dedicato."
+            );
+        }
+
+        // Controllo se stiamo passando IMAGE -> PDF oppure PDF -> IMAGE
+        boolean contentTypeChanged =
+                found.getContentType() != payload.contentType();
+
+        // Se cambio tipo di contenuto, devo necessariamente fornire un nuovo file
+        if (contentTypeChanged && (file == null || file.isEmpty())) {
+            throw new BadRequestException(
+                    "Devi selezionare un nuovo file quando cambi il tipo di contenuto."
+            );
+        }
+
+        // Il titolo può essere modificato indipendentemente dal contenuto
+        found.setTitle(payload.title());
+
+        // Se è stato fornito un nuovo file, sostituisco il contenuto
+        if (file != null && !file.isEmpty()) {
+
+            // Salvo i dati del vecchio file prima di sovrascriverli
+            String oldContentPublicId = found.getContentPublicId();
+            QrContentType oldContentType = found.getContentType();
+
+            // Carico il nuovo file su Cloudinary
+            CloudinaryUploadResponseDTO contentUpload =
+                    cloudinaryService.uploadContent(
+                            file,
+                            payload.contentType()
+                    );
+
+            // Aggiorno il QR con il nuovo contenuto
+            found.setContentType(payload.contentType());
+            found.setContentPublicId(contentUpload.publicId());
+            found.setContent(contentUpload.secureUrl());
+            found.setOriginalFileName(file.getOriginalFilename());
+
+            // Elimino il vecchio file da Cloudinary
+            // solo dopo che il nuovo upload è riuscito
+            if (oldContentPublicId != null
+                    && oldContentType != QrContentType.URL) {
+
+                cloudinaryService.deleteContent(
+                        oldContentPublicId,
+                        oldContentType
+                );
+            }
+        }
+
+        QrCode qrCodeUpdated = qrCodesRepository.save(found);
 
         return toQrCodeResponseDTO(qrCodeUpdated);
     }

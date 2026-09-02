@@ -10,7 +10,11 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import { getMyCategories } from "../redux/actions/categoryActions";
-import { getQrCodeById } from "../redux/actions/qrActions";
+import {
+  getQrCodeById,
+  updateQrCodeFromFile,
+  updateQrCodeFromUrl,
+} from "../redux/actions/qrActions";
 
 function QrCodeEditForm() {
   const dispatch = useDispatch();
@@ -53,7 +57,53 @@ function QrCodeEditForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // PATCH
+    try {
+      // non sto modificando il contenuto
+      if (!isEditingContent) {
+        if (selectedQrCode.contentType === "URL") {
+          const payload = {
+            title,
+            content: selectedQrCode.content,
+            contentType: "URL",
+          };
+
+          await dispatch(updateQrCodeFromUrl(qrId, payload));
+        } else {
+          const payload = {
+            title,
+            contentType: selectedQrCode.contentType,
+            file: null,
+          };
+
+          await dispatch(updateQrCodeFromFile(qrId, payload));
+        }
+      }
+
+      // sto modificando il contenuto
+      else {
+        if (contentType === "URL") {
+          const payload = {
+            title,
+            content,
+            contentType: "URL",
+          };
+
+          await dispatch(updateQrCodeFromUrl(qrId, payload));
+        } else {
+          const payload = {
+            title,
+            contentType,
+            file,
+          };
+
+          await dispatch(updateQrCodeFromFile(qrId, payload));
+        }
+      }
+
+      navigate(`/qrcodes/${qrId}`);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   if (!selectedQrCode) {
