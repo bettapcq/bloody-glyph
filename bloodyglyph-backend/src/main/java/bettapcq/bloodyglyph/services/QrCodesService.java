@@ -58,7 +58,8 @@ public class QrCodesService {
                 qrCode.getCategory() == null
                         ? null
                         : qrCode.getCategory().getCategoryId(),
-                qrCode.getCategory() == null ? null : qrCode.getCategory().getName()
+                qrCode.getCategory() == null ? null : qrCode.getCategory().getName(),
+                qrCode.getOriginalFileName()
         );
     }
 
@@ -158,6 +159,7 @@ public class QrCodesService {
                 .publicCode(publicCode)
                 .qrImageUrl(qrUpload.secureUrl())
                 .qrImagePublicId(qrUpload.publicId())
+                .originalFileName(file.getOriginalFilename())
                 .user(currentUser)
                 .build();
 
@@ -225,6 +227,8 @@ public class QrCodesService {
             found.setContentPublicId(null);
         }
 
+        found.setOriginalFileName(null);
+
         if (payload.content() == null || payload.content().isBlank()) {
             throw new BadRequestException("L'URL è obbligatorio.");
         }
@@ -274,6 +278,7 @@ public class QrCodesService {
 
         found.setContentPublicId(contentUpload.publicId());
         found.setContent(contentUpload.secureUrl());
+        found.setOriginalFileName(file.getOriginalFilename());
         QrCode qrCodeUpdated = qrCodesRepository.save(found);
 
         //cancello da cloudinary il vecchio file (lo faccio dopo aver salvato quello nuovo per sicurezza)

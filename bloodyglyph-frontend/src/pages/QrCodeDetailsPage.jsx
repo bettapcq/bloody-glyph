@@ -154,10 +154,13 @@ function QrCodeDetailsPage() {
                     </div>
 
                     <div className="mt-10 flex flex-wrap gap-3">
-                      <button className="inline-flex items-center gap-2 rounded-sm bg-[var(--color-primary)] px-5 py-3 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]">
+                      <Link
+                        to={`/qrcodes/edit/${selectedQrCode.qrId}`}
+                        className="inline-flex items-center gap-2 rounded-sm bg-[var(--color-primary)] px-5 py-3 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]"
+                      >
                         <FiEdit2 />
                         Modifica
-                      </button>
+                      </Link>
 
                       <button className="inline-flex items-center gap-2 rounded-sm border border-[var(--color-border)] px-5 py-3 text-sm font-semibold uppercase tracking-wider text-[var(--color-text-secondary)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-text)]">
                         <FiTrash2 />

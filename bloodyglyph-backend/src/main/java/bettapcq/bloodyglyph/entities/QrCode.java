@@ -49,6 +49,9 @@ public class QrCode {
     @Column(nullable = false, name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "original_file_name")
+    private String originalFileName;
+
     // Con PrePersist: Creo l'oggetto -> repository.save(qr)-> @PrePersist -> createdAt = LocalDateTime.now() -> INSERT nel database (senza che lo creo io ogni volta)
     @PrePersist
     public void prePersist() {

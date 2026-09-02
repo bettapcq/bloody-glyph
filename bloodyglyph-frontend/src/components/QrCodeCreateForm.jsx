@@ -15,7 +15,7 @@ import {
 } from "../redux/actions/qrActions";
 import { useNavigate } from "react-router-dom";
 
-function QrCodeForm() {
+function QrCodeCreateForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -263,4 +263,4 @@ function TypeButton({ label, icon, selected, onClick }) {
   );
 }
 
-export default QrCodeForm;
+export default QrCodeCreateForm;

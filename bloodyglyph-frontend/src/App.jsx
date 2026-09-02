@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getMe } from "./redux/actions/userActions";
 import DashboardPage from "./pages/DashboardPage";
-import NewQrCodePage from "./pages/NewQrCodePage";
 import QrCodeDetailsPage from "./pages/QrCodeDetailsPage";
+import QrCodeFormPage from "./pages/QrCodeFormPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -27,7 +27,11 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/qrcodes/new" element={<NewQrCodePage />} />
+        <Route path="/qrcodes/new" element={<QrCodeFormPage mode="create" />} />
+        <Route
+          path="/qrcodes/edit/:qrId"
+          element={<QrCodeFormPage mode="edit" />}
+        />
         <Route path="/qrcodes/:qrId" element={<QrCodeDetailsPage />} />
       </Routes>
     </BrowserRouter>

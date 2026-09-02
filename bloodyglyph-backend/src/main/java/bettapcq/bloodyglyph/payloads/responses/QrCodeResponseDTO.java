@@ -13,6 +13,7 @@ public record QrCodeResponseDTO(
         QrContentType contentType,
         Long userId,
         Long categoryId,
-        String categoryName
+        String categoryName,
+        String originalFileName
 ) {
 }
