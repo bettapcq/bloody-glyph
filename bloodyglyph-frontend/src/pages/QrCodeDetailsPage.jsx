@@ -154,10 +154,10 @@ function QrCodeDetailsPage() {
                         </div>
                       )}
 
-                      <DetailRow
+                      {/* TODO: CATEGORIA DA IMPLEMENTARE SUCCESSIVAMENTE <DetailRow
                         label="Categoria"
                         value={selectedQrCode.categoryName}
-                      />
+                      /> */}
 
                       <DetailRow
                         label="Creato il"

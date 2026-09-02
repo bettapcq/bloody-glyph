@@ -36,11 +36,12 @@ const QrCard = ({ qr }) => {
           <p className="text-xs text-[var(--color-text-secondary)]">
             Creato il {formattedDate}
           </p>
-          {qr.categoryName && (
+          {/* TODO: CATEGORIA DA IMPLEMENTARE SUCCESSIVAMENTE
+           {qr.categoryName && (
             <span className="text-xs text-[var(--color-bg)] py-1 px-2 rounded-sm bg-[var(--color-border-light)]/70">
               {qr.categoryName}
             </span>
-          )}
+          )} */}
         </div>
       </div>
     </article>

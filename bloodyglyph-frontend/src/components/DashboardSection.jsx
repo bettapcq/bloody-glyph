@@ -81,6 +81,7 @@ function DashboardSection() {
               {qrCodes ? qrCodes.length : 0} / 3
             </p>
           </div>
+          {/* CATEGORIE: DA IMPLEMENTARE SUCCESSIVAMENTE 
           <div className="w-50 rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/80 p-5">
             <p className="text-sm text-[var(--color-text-secondary)]">
               Categorie
@@ -88,7 +89,7 @@ function DashboardSection() {
             <p className="mt-2 font-[var(--font-title)] text-3xl">
               {categories ? categories.length : 0}
             </p>
-          </div>
+          </div> */}
         </div>
         {/* PIANO FREE/A PAGAMENTO DA VALUTARE IMPLEMENTAZIONE
           <div className="rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)]/80 p-5">
