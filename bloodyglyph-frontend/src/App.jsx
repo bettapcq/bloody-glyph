@@ -9,6 +9,7 @@ import { getMe } from "./redux/actions/userActions";
 import DashboardPage from "./pages/DashboardPage";
 import QrCodeDetailsPage from "./pages/QrCodeDetailsPage";
 import QrCodeFormPage from "./pages/QrCodeFormPage";
+import ProtectedRoute from "./components/ProtectedRoutes";
 
 function App() {
   const dispatch = useDispatch();
@@ -26,13 +27,42 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/qrcodes/new" element={<QrCodeFormPage mode="create" />} />
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/qrcodes/new"
+          element={
+            <ProtectedRoute>
+              <QrCodeFormPage mode="create" />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/qrcodes/edit/:qrId"
-          element={<QrCodeFormPage mode="edit" />}
+          element={
+            <ProtectedRoute>
+              <QrCodeFormPage mode="edit" />
+            </ProtectedRoute>
+          }
         />
-        <Route path="/qrcodes/:qrId" element={<QrCodeDetailsPage />} />
+
+        <Route
+          path="/qrcodes/:qrId"
+          element={
+            <ProtectedRoute>
+              <QrCodeDetailsPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
