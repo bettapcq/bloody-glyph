@@ -3,12 +3,16 @@ import { FiAlertTriangle, FiX } from "react-icons/fi";
 function AlertModal({
   isOpen,
   onClose,
+  onConfirm,
   title,
   message,
   buttonText = "Ho capito",
+  confirmText = "Conferma",
   icon = <FiAlertTriangle size={22} />,
 }) {
   if (!isOpen) return null;
+
+  const isConfirmModal = Boolean(onConfirm);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-5 backdrop-blur-sm">
@@ -33,14 +37,34 @@ function AlertModal({
           {message}
         </p>
 
-        <div className="mt-7 flex justify-end">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-sm bg-[var(--color-primary)] px-5 py-2.5 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]"
-          >
-            {buttonText}
-          </button>
+        <div className="mt-7 flex justify-end gap-3">
+          {isConfirmModal ? (
+            <>
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-sm border border-[var(--color-border)] px-5 py-2.5 text-sm font-semibold uppercase tracking-wider text-[var(--color-text-secondary)] transition hover:text-[var(--color-text)]"
+              >
+                Annulla
+              </button>
+
+              <button
+                type="button"
+                onClick={onConfirm}
+                className="rounded-sm bg-[var(--color-primary)] px-5 py-2.5 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]"
+              >
+                {confirmText}
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-sm bg-[var(--color-primary)] px-5 py-2.5 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]"
+            >
+              {buttonText}
+            </button>
+          )}
         </div>
       </div>
     </div>

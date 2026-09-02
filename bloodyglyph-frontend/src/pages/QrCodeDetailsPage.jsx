@@ -1,10 +1,11 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { FiArrowLeft, FiEdit2, FiTrash2, FiFileText } from "react-icons/fi";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { getQrCodeById } from "../redux/actions/qrActions";
+import { useEffect, useState } from "react";
+import { deleteQrCode, getQrCodeById } from "../redux/actions/qrActions";
+import AlertModal from "../components/AlertModal";
 
 function QrCodeDetailsPage() {
   const qrId = useParams().qrId;
@@ -32,6 +33,19 @@ function QrCodeDetailsPage() {
     link.remove(); // rimuove il link dal DOM, non serve più
 
     URL.revokeObjectURL(url); // rimuove l'oggetto URL temporaneo creato che punta al blob, per liberare memoria
+  };
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const navigate = useNavigate();
+  const handleDeleteQr = async () => {
+    try {
+      await dispatch(deleteQrCode(qrId));
+
+      setShowDeleteModal(false);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -162,7 +176,10 @@ function QrCodeDetailsPage() {
                         Modifica
                       </Link>
 
-                      <button className="inline-flex items-center gap-2 rounded-sm border border-[var(--color-border)] px-5 py-3 text-sm font-semibold uppercase tracking-wider text-[var(--color-text-secondary)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-text)]">
+                      <button
+                        onClick={() => setShowDeleteModal(true)}
+                        className="inline-flex items-center gap-2 rounded-sm border border-[var(--color-border)] px-5 py-3 text-sm font-semibold uppercase tracking-wider text-[var(--color-text-secondary)] transition hover:border-[var(--color-primary)] hover:text-[var(--color-text)]"
+                      >
                         <FiTrash2 />
                         Elimina
                       </button>
@@ -174,7 +191,15 @@ function QrCodeDetailsPage() {
           </div>
         </div>
       </section>
-
+      <AlertModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDeleteQr}
+        disabled={loading}
+        title="Elimina sigillo?"
+        message="Questa operazione è definitiva. Il QR code e il contenuto associato verranno eliminati."
+        confirmText={loading ? "Eliminazione..." : "Elimina"}
+      />
       <Footer />
     </main>
   );

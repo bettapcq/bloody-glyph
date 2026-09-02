@@ -11,6 +11,9 @@ import {
   UPDATE_QR_LOADING,
   UPDATE_QR_SUCCESS,
   UPDATE_QR_ERROR,
+  DELETE_QR_LOADING,
+  DELETE_QR_SUCCESS,
+  DELETE_QR_ERROR,
 } from "../actions/qrActions";
 
 const initialState = {
@@ -103,6 +106,31 @@ const qrReducer = (state = initialState, action) => {
       };
 
     case UPDATE_QR_ERROR:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    case DELETE_QR_LOADING:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case DELETE_QR_SUCCESS:
+      return {
+        ...state,
+        qrCodes: state.qrCodes.filter(
+          (qrCode) => qrCode.qrId !== action.payload,
+        ),
+        selectedQrCode: null,
+        loading: false,
+        error: null,
+      };
+
+    case DELETE_QR_ERROR:
       return {
         ...state,
         loading: false,

@@ -10,6 +10,9 @@ export const GET_QR_BY_ID_ERROR = "GET_QR_BY_ID_ERROR";
 export const UPDATE_QR_LOADING = "UPDATE_QR_LOADING";
 export const UPDATE_QR_SUCCESS = "UPDATE_QR_SUCCESS";
 export const UPDATE_QR_ERROR = "UPDATE_QR_ERROR";
+export const DELETE_QR_LOADING = "DELETE_QR_LOADING";
+export const DELETE_QR_SUCCESS = "DELETE_QR_SUCCESS";
+export const DELETE_QR_ERROR = "DELETE_QR_ERROR";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -216,10 +219,6 @@ export const updateQrCodeFromFile =
         formData.append("file", payload.file);
       }
 
-      if (payload.categoryId) {
-        formData.append("categoryId", payload.categoryId);
-      }
-
       const response = await fetch(`${API_URL}/qr/${qrId}/upload`, {
         method: "PATCH",
         headers: {
@@ -249,3 +248,35 @@ export const updateQrCodeFromFile =
       throw error;
     }
   };
+
+// elimina un QR code esistente
+export const deleteQrCode = (qrId) => async (dispatch, getState) => {
+  dispatch({ type: DELETE_QR_LOADING });
+
+  const token = getState().auth.token;
+
+  try {
+    const response = await fetch(`${API_URL}/qr/${qrId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Errore durante l'eliminazione del QR code");
+    }
+
+    dispatch({
+      type: DELETE_QR_SUCCESS,
+      payload: qrId,
+    });
+  } catch (error) {
+    dispatch({
+      type: DELETE_QR_ERROR,
+      payload: error.message || "Errore di connessione al server",
+    });
+
+    throw error;
+  }
+};
