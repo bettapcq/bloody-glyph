@@ -89,6 +89,21 @@ public class ErrorsHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
+    // 503 - Service Unavailable
+    @ExceptionHandler(EmailSendingException.class)
+    public ResponseEntity<ErrorsDTO> handleEmailSendingException(
+            EmailSendingException ex
+    ) {
+        ErrorsDTO response = new ErrorsDTO(
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(response);
+    }
+
 
     // 500 - Generic Exception
     @ExceptionHandler(Exception.class)

@@ -9,6 +9,7 @@ import {
   LOGOUT,
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_ERROR,
+  RESET_PASSWORD_LOADING,
 } from "../actions/authActions";
 
 const initialState = {
@@ -77,6 +78,7 @@ function AuthReducer(state = initialState, action) {
       return {
         ...state,
         error: null,
+        loading: false,
       };
 
     // LOGOUT
@@ -93,16 +95,25 @@ function AuthReducer(state = initialState, action) {
 
     // RESET PASSWORD
 
+    case RESET_PASSWORD_LOADING:
+      return {
+        ...state,
+        error: null,
+        loading: true,
+      };
+
     case RESET_PASSWORD_SUCCESS:
       return {
         ...state,
         error: null,
+        loading: false,
       };
 
     case RESET_PASSWORD_ERROR:
       return {
         ...state,
         error: action.payload,
+        loading: false,
       };
 
     default:

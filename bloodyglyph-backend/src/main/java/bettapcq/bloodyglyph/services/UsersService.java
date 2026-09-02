@@ -174,18 +174,29 @@ public class UsersService implements UserDetailsService {
         return password.toString();
     }
 
+    @Transactional
+    // @Transactional mi permette di fermare le modifiche nel DB nel caso qualcosa in tutta la transazione
+    // dovesse andare storto(tipo errore invio mail con nuova pwd)
     public void resetPasswordByEmail(String email) {
-        //check if email exists in db
-        User found = this.usersRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Non siste un account associato a questa email"));
+        User found = usersRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new NotFoundException(
+                                "Non esiste un account associato a questa email"
+                        )
+                );
 
-        if (found != null) {
-            String temporaryPassword = generatePassword(10);
+        String temporaryPassword = generatePassword(10);
 
-            found.setPassword(passwordEncoder.encode(temporaryPassword));
-            User userUpdated = usersRepository.save(found);
-            mailgunService.sendResetPasswordEmail(userUpdated, temporaryPassword);
+        found.setPassword(
+                passwordEncoder.encode(temporaryPassword)
+        );
 
-        }
+        usersRepository.save(found);
+
+        mailgunService.sendResetPasswordEmail(
+                found,
+                temporaryPassword
+        );
     }
 
 

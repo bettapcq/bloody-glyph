@@ -2,6 +2,7 @@ package bettapcq.bloodyglyph.services;
 
 import bettapcq.bloodyglyph.config.MailgunProperties;
 import bettapcq.bloodyglyph.entities.User;
+import bettapcq.bloodyglyph.exceptions.EmailSendingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
@@ -34,54 +35,49 @@ public class MailgunService {
             String html
     ) {
 
-        try {
-            // Costruisce l'endpoint di Mailgun
-            String url =
-                    "https://api.mailgun.net/v3/"
-                            + mailgunProperties.getDomain()
-                            + "/messages";
 
-            ClassPathResource banner =
-                    new ClassPathResource("images/bloodyglyph-banner.png");
+        // Costruisce l'endpoint di Mailgun
+        String url =
+                "https://api.mailgun.net/v3/"
+                        + mailgunProperties.getDomain()
+                        + "/messages";
+
+        ClassPathResource banner =
+                new ClassPathResource("images/bloodyglyph-banner.png");
 
 
-            // Crea il body della richiesta nel formato application/x-www-form-urlencoded richiesto da Mailgun
-            MultiValueMap<String, Object> body =
-                    new LinkedMultiValueMap<>();
+        // Crea il body della richiesta nel formato application/x-www-form-urlencoded richiesto da Mailgun
+        MultiValueMap<String, Object> body =
+                new LinkedMultiValueMap<>();
 
-            // aggiunge al body mittente, destinatario, oggetto, testo dell' email e banner
-            body.add("from", mailgunProperties.getFrom());
-            body.add("to", to);
-            body.add("subject", subject);
-            body.add("html", html);
-            body.add("inline", banner);
+        // aggiunge al body mittente, destinatario, oggetto, testo dell' email e banner
+        body.add("from", mailgunProperties.getFrom());
+        body.add("to", to);
+        body.add("subject", subject);
+        body.add("html", html);
+        body.add("inline", banner);
 
-            // Effettua una richiesta HTTP POST verso Mailgun
-            restClient.post()
-                    //Inserimento endpoint
-                    .uri(url)
-                    // Autenticazione richiesta da Mailgun: username = "api", password = API Key
-                    .headers(headers -> {
-                        headers.setBasicAuth(
-                                "api",
-                                mailgunProperties.getApiKey()
-                        );
-                    })
-                    // Formato dei dati inviati
-                    .contentType(MediaType.MULTIPART_FORM_DATA)
-                    // Inserimento del body che ho costruito
-                    .body(body)
-                    // Invio della richiesta
-                    .retrieve()
-                    // Risposta senza contenuto, basta sapere se è andata a buon fine
-                    .toBodilessEntity();
+        // Effettua una richiesta HTTP POST verso Mailgun
+        restClient.post()
+                //Inserimento endpoint
+                .uri(url)
+                // Autenticazione richiesta da Mailgun: username = "api", password = API Key
+                .headers(headers -> {
+                    headers.setBasicAuth(
+                            "api",
+                            mailgunProperties.getApiKey()
+                    );
+                })
+                // Formato dei dati inviati
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                // Inserimento del body che ho costruito
+                .body(body)
+                // Invio della richiesta
+                .retrieve()
+                // Risposta senza contenuto, basta sapere se è andata a buon fine
+                .toBodilessEntity();
 
-        } catch (Exception e) {
-            log.error(
-                    "Errore durante l'invio dell'email a: " + to,
-                    e
-            );
-        }
+
     }
 
     //Metodo per leggere un template HTML dalla cartella resources/templates/email.
@@ -114,21 +110,28 @@ public class MailgunService {
 
     public void sendRegistrationEmail(User recipient) {
 
+        try {
+            String subject = "Benvenutə su BloodyGlyph!";
 
-        String subject = "Benvenutə su BloodyGlyph!";
+            String html = loadTemplate("welcome.html");
 
-        String html = loadTemplate("welcome.html");
+            html = html.replace(
+                    "{{username}}",
+                    recipient.getUsername()
+            );
 
-        html = html.replace(
-                "{{username}}",
-                recipient.getUsername()
-        );
-
-        sendEmail(
-                recipient.getEmail(),
-                subject,
-                html
-        );
+            sendEmail(
+                    recipient.getEmail(),
+                    subject,
+                    html
+            );
+        } catch (Exception e) {
+            log.error(
+                    "Errore durante l'invio della welcome email a: {}",
+                    recipient.getEmail(),
+                    e
+            );
+        }
     }
 
 
@@ -148,46 +151,74 @@ public class MailgunService {
                 temporaryPassword
         );
 
-        sendEmail(
-                recipient.getEmail(),
-                subject,
-                html
-        );
+        try {
+            sendEmail(
+                    recipient.getEmail(),
+                    subject,
+                    html
+            );
+        } catch (Exception e) {
+            log.error(
+                    "Errore durante l'invio dell'email a: {}",
+                    recipient.getEmail(),
+                    e);
+            throw new EmailSendingException(
+                    "Impossibile inviare l'email. La password non è stata modificata.",
+                    e
+            );
+        }
     }
 
     public void sendPasswordChangedEmail(User recipient) {
 
-        String subject = "Password aggiornata";
+        try {
+            String subject = "Password aggiornata";
 
-        String html = loadTemplate("password-changed.html");
+            String html = loadTemplate("password-changed.html");
 
-        html = html.replace(
-                "{{username}}",
-                recipient.getUsername()
-        );
+            html = html.replace(
+                    "{{username}}",
+                    recipient.getUsername()
+            );
 
-        sendEmail(
-                recipient.getEmail(),
-                subject,
-                html
-        );
+            sendEmail(
+                    recipient.getEmail(),
+                    subject,
+                    html
+            );
+        } catch (Exception e) {
+            log.error(
+                    "Errore durante l'invio della mail di cambio password a: {}",
+                    recipient.getEmail(),
+                    e
+            );
+        }
     }
 
     public void sendEmailChangedEmail(User recipient) {
-        String subject = "Email aggiornata";
 
-        String html = loadTemplate("email-changed.html");
+        try {
+            String subject = "Email aggiornata";
 
-        html = html.replace(
-                "{{username}}",
-                recipient.getUsername()
-        );
+            String html = loadTemplate("email-changed.html");
 
-        sendEmail(
-                recipient.getEmail(),
-                subject,
-                html
-        );
+            html = html.replace(
+                    "{{username}}",
+                    recipient.getUsername()
+            );
+
+            sendEmail(
+                    recipient.getEmail(),
+                    subject,
+                    html
+            );
+        } catch (Exception e) {
+            log.error(
+                    "Errore durante l'invio della mail di cambio email a: {}",
+                    recipient.getEmail(),
+                    e
+            );
+        }
     }
 
 }

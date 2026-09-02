@@ -11,7 +11,7 @@ const ResetPasswordModal = ({ isOpen, onClose }) => {
 
   const [successMessage, setSuccessMessage] = useState("");
 
-  const { error } = useSelector((state) => state.auth);
+  const { error, loading } = useSelector((state) => state.auth);
 
   if (!isOpen) return null;
 
@@ -83,7 +83,10 @@ const ResetPasswordModal = ({ isOpen, onClose }) => {
                 id="reset-email"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  dispatch(clearAuthError());
+                }}
                 placeholder="la_tua_email@mail.com"
                 required
                 className="w-full rounded-sm border border-[var(--color-border)] bg-black/20 py-3.5 pl-12 pr-4 text-sm text-[var(--color-text)] outline-none transition placeholder:text-[var(--color-text-secondary)]/40 focus:border-[var(--color-primary)]"
@@ -97,15 +100,16 @@ const ResetPasswordModal = ({ isOpen, onClose }) => {
           )}
 
           {successMessage && (
-            <p className="text-center text-sm text-green-500">
+            <p className="text-center text-sm text-[var(--color-text)]">
               {successMessage}
             </p>
           )}
           <button
             type="submit"
+            disabled={loading}
             className="w-full rounded-sm bg-[var(--color-primary)] px-6 py-3.5 text-sm font-semibold uppercase tracking-[0.15em] transition hover:bg-[var(--color-primary-hover)]"
           >
-            Invia password temporanea
+            {loading ? "Invio..." : "Invia password temporanea"}
           </button>
         </form>
       </div>

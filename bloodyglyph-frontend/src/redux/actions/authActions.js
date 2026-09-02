@@ -8,6 +8,7 @@ export const CLEAR_AUTH_ERROR = "CLEAR_AUTH_ERROR";
 export const LOGOUT = "LOGOUT";
 export const RESET_PASSWORD_SUCCESS = "RESET_PASSWORD_SUCCESS";
 export const RESET_PASSWORD_ERROR = "RESET_PASSWORD_ERROR";
+export const RESET_PASSWORD_LOADING = "RESET_PASSWORD_LOADING";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -114,6 +115,7 @@ export const logoutUser = () => {
 
 // RESET PASSWORD
 export const resetPassword = (email) => async (dispatch) => {
+  dispatch({ type: RESET_PASSWORD_LOADING });
   try {
     const response = await fetch(
       `${API_URL}/auth/reset-password?email=${encodeURIComponent(email)}`,
