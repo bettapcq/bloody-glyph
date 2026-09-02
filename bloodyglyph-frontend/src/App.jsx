@@ -12,7 +12,7 @@ import QrCodeFormPage from "./pages/QrCodeFormPage";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import ScrollToTop from "./components/ScrollToTop";
 import AccountSettingsPage from "./pages/AccountSettingsPage";
-import NotFoundPage from "./pages/NotFoundPAge";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   const dispatch = useDispatch();
