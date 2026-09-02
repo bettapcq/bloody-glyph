@@ -26,7 +26,7 @@ function QrCodeDetailsPage() {
 
     const link = document.createElement("a"); // crea un <a> fittizio,
     link.href = url; //aggiunge al link l'href con l'url creato, concettualmente una cosa tipo : <a href="blob:http://url-temporanea/..."></a>
-    link.download = `${selectedQrCode.title}.png`; // imposta il nome del file da scaricare (prendendo il titolo del qr code e aggiungendo l'estensione .png)
+    link.download = `${selectedQrCode.title}-qr.png`; // imposta il nome del file da scaricare (prendendo il titolo del qr code e aggiungendo l'estensione .png)
 
     document.body.appendChild(link); //aggiunge il link al body del documento, non si vedrà perché non contiene testo e viene eliminato immediatamente.
     link.click(); //simula un click sul link, innescando il download del file

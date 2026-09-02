@@ -194,7 +194,7 @@ const Navbar = () => {
 
                 <NavLink
                   to="/register"
-                  className="rounded-md bg-[var(--color-primary)] px-5 py-2.5 text-sm font-semibold text-[var(--color-text)] transition-colors hover:bg-[var(--color-primary-hover)]"
+                  className="rounded-md w-[50%] self-center bg-[var(--color-primary)] px-5 py-2.5 text-sm text-center font-semibold text-[var(--color-text)] transition-colors hover:bg-[var(--color-primary-hover)]"
                 >
                   Registrati
                 </NavLink>
