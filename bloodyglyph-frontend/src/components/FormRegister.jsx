@@ -228,6 +228,17 @@ const FormRegister = () => {
               {error}
             </p>
           )}
+          <p className="text-xs text-[var(--color-text-secondary)]">
+            Registrandoti dichiari di aver letto la{" "}
+            <Link
+              to="/privacy-policy"
+              target="_blank"
+              className="text-[var(--color-primary)] hover:underline"
+            >
+              Privacy Policy
+            </Link>
+            .
+          </p>
           <button
             type="submit"
             disabled={loading}
