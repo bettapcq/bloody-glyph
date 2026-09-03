@@ -113,14 +113,14 @@ function DashboardSection() {
                 I miei QR code
               </h2>
 
-              <p className="mt-1 text-sm text-[var(--color-text-secondary)]">
+              <p className="mt-1 text-sm text-[var(--color-text-secondary)] mb-6">
                 Gestisci, modifica e condividi i tuoi sigilli.
               </p>
             </div>
 
             <button
               onClick={handleCreateQrCode}
-              className="flex items-center justify-center gap-2 rounded-sm bg-[var(--color-primary)] px-5 py-3 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]"
+              className="hidden lg:flex items-center justify-center gap-2 rounded-sm bg-[var(--color-primary)] px-5 py-3 text-sm font-semibold uppercase tracking-wider transition hover:bg-[var(--color-primary-hover)]"
             >
               <FiPlus />
               Crea QR code
@@ -158,7 +158,7 @@ function DashboardSection() {
           )}
           {/* CARDS */}
           {!loading && !error && (
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4">
               {qrCodes?.map((qr, index) => (
                 <motion.div
                   key={qr.qrId}
