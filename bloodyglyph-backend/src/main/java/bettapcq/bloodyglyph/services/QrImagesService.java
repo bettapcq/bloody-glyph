@@ -429,28 +429,46 @@ public class QrImagesService {
 
             BufferedImage logo = ImageIO.read(logoStream);
 
-            int logoSize = (int) (QR_SIZE * 0.20);
+            int maxLogoSize = (int) (QR_SIZE * 0.20);
 
-            int logoX = (QR_SIZE - logoSize) / 2;
-            int logoY = (QR_SIZE - logoSize) / 2;
+            int originalWidth = logo.getWidth();
+            int originalHeight = logo.getHeight();
 
-            int backgroundPadding = 4;
+            double scale = Math.min(
+                    (double) maxLogoSize / originalWidth,
+                    (double) maxLogoSize / originalHeight
+            );
+
+            int logoWidth = (int) (originalWidth * scale);
+            int logoHeight = (int) (originalHeight * scale);
+
+            int logoX = (QR_SIZE - logoWidth) / 2;
+            int logoY = (QR_SIZE - logoHeight) / 2;
+
+            int backgroundPadding = 8;
+
+            int backgroundSize =
+                    Math.max(logoWidth, logoHeight)
+                            + (backgroundPadding * 2);
+
+            int backgroundX = (QR_SIZE - backgroundSize) / 2;
+            int backgroundY = (QR_SIZE - backgroundSize) / 2;
 
             graphics.setColor(BACKGROUND_COLOR);
 
             graphics.fillOval(
-                    logoX - backgroundPadding,
-                    logoY - backgroundPadding,
-                    logoSize + (backgroundPadding * 2),
-                    logoSize + (backgroundPadding * 2)
+                    backgroundX,
+                    backgroundY,
+                    backgroundSize,
+                    backgroundSize
             );
 
             graphics.drawImage(
                     logo,
                     logoX,
                     logoY,
-                    logoSize,
-                    logoSize,
+                    logoWidth,
+                    logoHeight,
                     null
             );
 
