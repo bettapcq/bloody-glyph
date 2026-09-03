@@ -13,6 +13,8 @@ import ProtectedRoute from "./components/ProtectedRoutes";
 import ScrollToTop from "./components/ScrollToTop";
 import AccountSettingsPage from "./pages/AccountSettingsPage";
 import NotFoundPage from "./pages/NotFoundPAge";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import CookiePolicy from "./pages/CookiePolicy";
 
 function App() {
   const dispatch = useDispatch();
@@ -77,6 +79,8 @@ function App() {
           }
         />
         <Route path="*" element={<NotFoundPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/cookie-policy" element={<CookiePolicy />} />
       </Routes>
     </BrowserRouter>
   );
