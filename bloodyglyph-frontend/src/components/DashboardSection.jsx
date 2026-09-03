@@ -14,7 +14,7 @@ function DashboardSection() {
   const dispatch = useDispatch();
 
   const { qrCodes, loading, error } = useSelector((state) => state.qrCodes);
-  const { categories } = useSelector((state) => state.categories);
+  // const { categories } = useSelector((state) => state.categories);
 
   useEffect(() => {
     dispatch(getMyQrCodes());
@@ -36,7 +36,7 @@ function DashboardSection() {
 
   return (
     <section className="px-5 pb-20 pt-15 text-[var(--color-text)] md:px-8 lg:pt-36">
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-5xl">
         {/* HERO */}
         <div
           className="overflow-hidden rounded-sm bg-cover bg-[center_70%] md:bg-center"

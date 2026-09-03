@@ -1,6 +1,6 @@
 const CookiePolicy = () => {
   return (
-    <main className="min-h-screen px-5 pb-20 pt-32 text-[var(--color-text)] md:px-8">
+    <main className="min-h-screen px-5 pb-20 pt-5 text-[var(--color-text)] md:px-8">
       <article className="mx-auto max-w-4xl">
         <img
           src="/logo-transparent.png"

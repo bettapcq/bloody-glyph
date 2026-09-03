@@ -127,7 +127,7 @@ function AccountSettingsPage() {
     <>
       <Navbar />
 
-      <section className="px-5 pb-20 pt-24 text-[var(--color-text)] md:px-8 lg:pt-36">
+      <section className="px-5 pb-20 pt-30 text-[var(--color-text)] md:px-8 lg:pt-36">
         <div className="mx-auto max-w-4xl">
           <motion.div
             initial={{ opacity: 0, y: 25 }}

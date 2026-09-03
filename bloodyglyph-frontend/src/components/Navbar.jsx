@@ -22,12 +22,12 @@ const Navbar = () => {
 
   return (
     <nav className="navbar fixed top-0 left-0 z-50 w-full bg-[var(--color-bg)]/90 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:h-30 md:px-8">
+      <div className="mx-auto flex h-25 max-w-7xl items-center justify-between px-4 md:h-25 md:px-8">
         <NavLink to="/" className="flex items-center">
           <img
             src="/logo-transparent.png"
             alt="BloodyGlyph"
-            className="h-20 w-auto md:h-30 px-3"
+            className="h-25 w-auto md:h-40 px-3"
           />
         </NavLink>
 
@@ -45,8 +45,8 @@ const Navbar = () => {
             to="/"
             className={({ isActive }) =>
               isActive
-                ? "text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)] items-center border-b-2 border-[var(--color-primary)] pb-1"
-                : "text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)] items-center pb-1"
+                ? "font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)] items-center border-b-2 border-[var(--color-primary)] pb-1"
+                : "font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)] items-center pb-1"
             }
           >
             Home
@@ -58,8 +58,8 @@ const Navbar = () => {
                 to="/dashboard"
                 className={({ isActive }) =>
                   isActive
-                    ? "items-center border-b-2 border-[var(--color-primary)] pb-1 text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)]"
-                    : "items-center pb-1 text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)]"
+                    ? "items-center border-b-2 border-[var(--color-primary)] pb-1 text-md font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)]"
+                    : "items-center pb-1 text-md font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)]"
                 }
               >
                 Dashboard
@@ -69,7 +69,7 @@ const Navbar = () => {
                 <button
                   type="button"
                   onClick={() => setUserMenuOpen((prev) => !prev)}
-                  className="flex items-center gap-2 font-[var(--font-title)] text-sm font-bold uppercase tracking-wider text-[var(--color-primary)] transition hover:text-[var(--color-primary-hover)]"
+                  className="flex items-center gap-2 font-[var(--font-title)] font-bold uppercase tracking-wider text-[var(--color-primary)] transition hover:text-[var(--color-primary-hover)]"
                 >
                   <FiUser className="text-base" />
                   {currentUser?.username}
@@ -80,7 +80,7 @@ const Navbar = () => {
                     <NavLink
                       to="/settings"
                       onClick={() => setUserMenuOpen(false)}
-                      className="block px-4 py-2 text-sm text-[var(--color-text-secondary)] transition hover:text-[var(--color-text)]"
+                      className="block px-4 py-2 text-[var(--color-text-secondary)] transition hover:text-[var(--color-text)]"
                     >
                       Impostazioni
                     </NavLink>
@@ -88,7 +88,7 @@ const Navbar = () => {
                     <button
                       type="button"
                       onClick={handleLogout}
-                      className="w-full px-4 py-2 text-left text-sm text-[var(--color-primary)] transition hover:text-[var(--color-primary-hover)]"
+                      className="w-full px-4 py-2 text-left text-[var(--color-primary)] transition hover:text-[var(--color-primary-hover)]"
                     >
                       Logout
                     </button>
@@ -102,8 +102,8 @@ const Navbar = () => {
                 to="/login"
                 className={({ isActive }) =>
                   isActive
-                    ? "items-center border-b-2 border-[var(--color-primary)] pb-1 text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)]"
-                    : "items-center pb-1 text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)]"
+                    ? "items-center border-b-2 border-[var(--color-primary)] pb-1 font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)]"
+                    : "items-center pb-1 font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)]"
                 }
               >
                 Login
@@ -111,7 +111,7 @@ const Navbar = () => {
 
               <NavLink
                 to="/register"
-                className="rounded-md bg-[var(--color-primary)] px-5 py-2.5 text-sm font-semibold text-[var(--color-text)] transition-colors hover:bg-[var(--color-primary-hover)]"
+                className="rounded-md bg-[var(--color-primary)] px-5 py-2.5 font-semibold text-[var(--color-text)] transition-colors hover:bg-[var(--color-primary-hover)]"
               >
                 Registrati
               </NavLink>
@@ -137,8 +137,8 @@ const Navbar = () => {
                   to="/dashboard"
                   className={({ isActive }) =>
                     isActive
-                      ? "items-center border-b-2 border-[var(--color-primary)] pb-1 text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)]"
-                      : "items-center pb-1 text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)]"
+                      ? "items-center border-b-2 border-[var(--color-primary)] pb-1 font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)]"
+                      : "items-center pb-1 font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)]"
                   }
                 >
                   Dashboard
@@ -155,7 +155,7 @@ const Navbar = () => {
                   <div className="flex items-center gap-2">
                     <FiUser className="text-lg text-[var(--color-primary)]" />
 
-                    <span className="font-[var(--font-title)] text-sm font-bold uppercase tracking-wider text-[var(--color-primary)]">
+                    <span className="font-[var(--font-title)] font-bold uppercase tracking-wider text-[var(--color-primary)]">
                       {currentUser?.username}
                     </span>
                   </div>
@@ -164,14 +164,14 @@ const Navbar = () => {
                     <NavLink
                       to="/settings"
                       onClick={() => setIsOpen(false)}
-                      className="text-sm text-[var(--color-text-secondary)] transition hover:text-[var(--color-text)]"
+                      className="text-[var(--color-text-secondary)] transition hover:text-[var(--color-text)]"
                     >
                       Impostazioni
                     </NavLink>
 
                     <button
                       type="button"
-                      className="w-fit text-sm text-[var(--color-primary)] transition hover:text-[var(--color-primary-hover)]"
+                      className="w-fit text-[var(--color-primary)] transition hover:text-[var(--color-primary-hover)]"
                       onClick={handleLogout}
                     >
                       Logout
@@ -185,8 +185,8 @@ const Navbar = () => {
                   to="/login"
                   className={({ isActive }) =>
                     isActive
-                      ? "items-center border-b-2 border-[var(--color-primary)] pb-1 text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)]"
-                      : "items-center pb-1 text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)]"
+                      ? "items-center border-b-2 border-[var(--color-primary)] pb-1 font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)]"
+                      : "items-center pb-1 font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text)]"
                   }
                 >
                   Login
@@ -194,7 +194,7 @@ const Navbar = () => {
 
                 <NavLink
                   to="/register"
-                  className="rounded-md w-[50%] self-center bg-[var(--color-primary)] px-5 py-2.5 text-sm text-center font-semibold text-[var(--color-text)] transition-colors hover:bg-[var(--color-primary-hover)]"
+                  className="rounded-md w-[50%] self-center bg-[var(--color-primary)] px-5 py-2.5 text-center font-semibold text-[var(--color-text)] transition-colors hover:bg-[var(--color-primary-hover)]"
                 >
                   Registrati
                 </NavLink>
