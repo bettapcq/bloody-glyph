@@ -91,11 +91,26 @@ export const createQrCodeFromFile = (payload) => async (dispatch, getState) => {
   const token = getState().auth.token;
 
   try {
+    // Legge realmente il contenuto del file.
+    // Utile soprattutto con file provenienti da provider esterni
+    // come Google Drive su Android.
+    const fileBuffer = await payload.file.arrayBuffer();
+
+    // Crea un nuovo File locale a partire dai byte letti,
+    // mantenendo nome e MIME type.
+    const normalizedFile = new File([fileBuffer], payload.file.name || "file", {
+      type:
+        payload.file.type ||
+        (payload.contentType === "PDF"
+          ? "application/pdf"
+          : "application/octet-stream"),
+    });
+
     const formData = new FormData();
 
     formData.append("title", payload.title);
     formData.append("contentType", payload.contentType);
-    formData.append("file", payload.file);
+    formData.append("file", normalizedFile);
 
     if (payload.categoryId) {
       formData.append("categoryId", payload.categoryId);
@@ -122,12 +137,20 @@ export const createQrCodeFromFile = (payload) => async (dispatch, getState) => {
 
     return data;
   } catch (error) {
+    let errorMessage =
+      error.message || "Errore durante il caricamento del file";
+
+    if (error.message === "Failed to fetch") {
+      errorMessage =
+        "Impossibile caricare il file. Controlla la connessione o prova a selezionare nuovamente il documento.";
+    }
+
     dispatch({
       type: CREATE_QR_ERROR,
-      payload: error.message || "Errore di connessione al server",
+      payload: errorMessage,
     });
 
-    throw error;
+    throw new Error(errorMessage);
   }
 };
 
@@ -196,7 +219,7 @@ export const updateQrCodeFromUrl =
     } catch (error) {
       dispatch({
         type: UPDATE_QR_ERROR,
-        payload: error.message || "Errore di connessione al server",
+        payload: error.message || "Errore durante la modifica del QR code",
       });
 
       throw error;
@@ -216,7 +239,21 @@ export const updateQrCodeFromFile =
       formData.append("title", payload.title);
       formData.append("contentType", payload.contentType);
       if (payload.file) {
-        formData.append("file", payload.file);
+        const fileBuffer = await payload.file.arrayBuffer();
+
+        const normalizedFile = new File(
+          [fileBuffer],
+          payload.file.name || "file",
+          {
+            type:
+              payload.file.type ||
+              (payload.contentType === "PDF"
+                ? "application/pdf"
+                : "application/octet-stream"),
+          },
+        );
+
+        formData.append("file", normalizedFile);
       }
 
       const response = await fetch(`${API_URL}/qr/${qrId}/upload`, {
@@ -240,12 +277,20 @@ export const updateQrCodeFromFile =
 
       return data;
     } catch (error) {
+      let errorMessage =
+        error.message || "Errore durante la modifica del QR code";
+
+      if (error.message === "Failed to fetch") {
+        errorMessage =
+          "Impossibile caricare il file. Controlla la connessione o prova a selezionare nuovamente il documento.";
+      }
+
       dispatch({
         type: UPDATE_QR_ERROR,
-        payload: error.message || "Errore di connessione al server",
+        payload: errorMessage,
       });
 
-      throw error;
+      throw new Error(errorMessage);
     }
   };
 
