@@ -88,15 +88,15 @@ La versione attuale di BloodyGlyph è gratuita e consente la creazione di un mas
 ### Database & Cloud
 
 - PostgreSQL
-- Neon
+- Supabase
 - Cloudinary
 - Mailgun
 
 ### Deployment
 
 - **Frontend:** Vercel
-- **Backend:** Railway
-- **Database:** Neon
+- **Backend:** Northflank
+- **Database:** Supabase
 
 ---
 
